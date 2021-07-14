@@ -1,0 +1,19 @@
+/* @keyframes pulse1 {
+    0%  {
+        background-color:  #32aedb  ;    
+    }
+
+    50%{
+        background-color: rgb(77, 189, 116);
+    }
+
+    100%{
+        background-color:  #32aedb  ;    
+    }
+} 
+
+.login {
+    /* box-shadow: 1px 1px 10px 10px rgba(4, 130, 161, 0.8); */
+    /* animation: pulse1 6s ease-in-out infinite; */
+/* } */ 
+

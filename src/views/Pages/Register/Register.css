@@ -1,0 +1,15 @@
+@keyframes pulse {
+    0%  {
+        box-shadow: 1px 1px 10px 9px rgba(77, 189, 116);
+    }
+    
+    100%{
+        box-shadow: 1px 1px 10px 3px rgba(77, 189, 116) ;
+    }
+} 
+
+.register {
+    /* box-shadow: 1px 1px 10px 10px rgba(4, 130, 161, 0.8); */
+    animation: pulse 2s ease-in-out infinite;
+    border-radius: 3px;
+}

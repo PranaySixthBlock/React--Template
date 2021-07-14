@@ -1,0 +1,323 @@
+// Styles
+// CoreUI Icons Set
+@import '~@coreui/icons/css/coreui-icons.css';
+// Import Flag Icons Set
+@import '~flag-icon-css/css/flag-icon.min.css';
+// Import Font Awesome Icons Set
+@import '~font-awesome/css/font-awesome.min.css';
+// Import Simple Line Icons Set
+@import '~simple-line-icons/css/simple-line-icons.css';
+// Import Main styles for this application
+@import './scss/style.scss';
+
+.nav-link.active {
+    color: #f3f4f5;
+    background-color: #343b41;
+    border-color: #23282c;
+}
+.img-avatar{
+    // padding:15px;
+    // background-color: #225255;
+}
+code {
+    font-size: 93.5%;
+    color: #171819fc;
+    word-break: break-word;
+}
+.toggle-play-button{
+    background-color:#20b1a9 !important;
+    // background-color: #00abd9;
+}
+.pause-icon{
+    box-shadow:rgb(32, 177, 169) 7px 0px 0px 0px inset !important;
+}
+.progress-bar-wrapper{
+    top: 10px !important;
+}
+.volumn{
+    
+    border-bottom-color: #20a8d8 !important
+}
+.indicator{
+    background: #20a8d8 !important;
+}
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #20a8d8;
+}
+
+a {
+    color: #20a8d8;
+    text-decoration: none;
+    background-color: transparent;
+}
+.btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active, .show > .btn-outline-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #20a8d8 !important;
+    border-color: #20a8d8 !important;
+}
+.btn-outline-primary:hover{
+    color: #fff !important;
+    background-color: #20a8d8 !important;
+    border-color: #20a8d8 !important;
+}
+.btn-outline-primary {
+    color:#20a8d8 !important;
+    border-color: #20a8d8 !important;
+}
+.modal-primary .modal-header {
+    color: #fff;
+    background-color: #20a8d8 !important;
+}
+.btn-primary, .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #20a8d8 !important;
+    border-color: #20a8d8 !important;
+}  
+a {
+    color: #20a8d8;
+    text-decoration: none;
+    background-color: transparent;
+}
+body{
+    background-color:#ffffff
+}
+.btn-vobo{
+    color: #fff;
+    background-color: #20a8d8 !important;
+    border-color: #20a8d8 !important;
+}
+.btn-vobo:hover{
+    color: #fff !important;
+    background-color: #20a8d8 !important;
+    border-color: #20a8d8 !important;
+}
+.w-100{
+    widows: 100%;;
+}
+@media (max-width: 767px){
+    .container {
+       width: 80%;
+      padding: 15px;
+      padding-top: 0px;
+      margin-top: -100px;
+  }
+}
+@media (min-width: 992px){
+    .sidebar-fixed .sidebar {
+        border-right: 1px solid #cccccc !important;
+    }
+}
+.sidebar {
+    background: #ffffff;
+}
+.sidebar .nav-link.active {
+    color: #fff;
+    //background: #20b1a9b5;
+    background: #20a8d8;
+}
+.sidebar .nav-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #171616;
+    text-decoration: none;
+    background: transparent;
+}
+.sidebar .nav-link:hover {
+    color: #fff;
+    background: #20a8d8;
+}
+.sidebar .nav-link.active .nav-icon {
+    color: #73818f;
+}
+.app-footer {
+    background: #ffffff !important;
+}
+@media (min-width: 992px){
+    .sidebar-minimized .sidebar .sidebar-minimizer {
+        position: fixed;
+        bottom: 0;
+        width: 50px;
+        height: 50px;
+        background-color: #ffffff;
+        border-right: 1px solid #cccccc;
+    }
+}
+.sidebar .sidebar-minimizer:hover {
+    background-color: #20a8d8;
+}
+.sidebar .sidebar-minimizer {
+    position: relative;
+    -webkit-flex: 0 0 50px;
+    flex: 0 0 50px;
+    cursor: pointer;
+    background-color: rgb(255, 255, 255);
+    border: 0;
+}
+
+.loading-indicator:before {
+    content: '';
+    background: #60c7c270;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.loading-indicator:after {
+    content: 'Loading...!';
+    position: fixed;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    z-index: 1001;
+    color:white;
+    text-align:center;
+    font-weight:bold;
+    font-size:1.5rem;        
+}
+.rss-loading-indicator:before {
+    content: '';
+    background: #60c7c270;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.rss-loading-indicator:after {
+    content: 'Please wait while we are importing RSS data....';
+    position: fixed;
+    width: 100%;
+    top: 50%;
+    left: 3%;
+    z-index: 1001;
+    color:black;
+    text-align:center;
+    // font-weight:bold;
+    font-size:1.5rem;        
+}
+
+.react-h5-audio-player {
+
+    .flex {
+        padding:8px 4px !important;
+        height:56px !important;
+        box-shadow:none !important;
+      }
+
+}
+.volume-controls{
+    display: none;
+}
+ 
+.form-control:valid, .form-control.is-valid{
+    background-image:none !important;
+}
+.sidebar-minimized .sidebar .nav-item:hover > .nav-link {
+    background: #20a8d8;
+}
+.sidebar .nav-title {
+   
+    color: #23282c;
+  
+}
+
+.hide-intab{
+    display: none;
+}
+.invocationMessage{
+    padding-top: 2.2rem !important;
+    padding-bottom: 1rem !important;
+}
+
+.alert-warning {
+    color: #f3f7f9;
+    background-color: #e91010;
+    border-color: #ffeeba;
+    font-size: 16px;
+}
+.hide-intab{
+    display: none;
+}
+@media only screen and (max-width :480px) {
+    #username {
+      display: none;
+      padding-left:0px;
+    }
+
+    .hide-intab{
+        display: block;
+    }
+    #status{
+        padding-right:5px;
+    }
+  
+    .app-header .nav-item {
+        margin-right:-48px;
+        min-width: 0px;
+        display: none;
+        /* min-width: 50px; */
+       
+    }
+    .hints{
+        display: none;
+    }
+  }
+  @media only screen and (max-width :768px) {
+    #username {
+      display: none;
+      padding-left:0px;
+    }
+
+    // .hide-intab{
+    //     display: block;
+    // }
+
+    #status{
+        padding-right:5px;
+    }
+  
+    .app-header .nav-item {
+        margin-right:-48px;
+        min-width: 0px;
+       
+        /* min-width: 50px; */
+       
+    }
+    .hints{
+        display: none;
+    }
+    .app-header .navbar-brand {
+        display: none !important; 
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin-left: -154.5px;
+    }
+  }
+
+ 
+  a:not([href]):not([tabindex]) {
+    color: #171616;
+    text-decoration: none;
+}
+
+a:hover {
+  
+    text-decoration: none;
+}
+.Toastify__toast{
+    margin-top: 50px;
+  }
+
+  #status{
+    border: 1px solid #c8ced3;
+    padding: 2px 18px;
+    background-color: #164a6d;
+    color: white;
+}
