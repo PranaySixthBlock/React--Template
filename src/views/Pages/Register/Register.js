@@ -139,10 +139,12 @@ class Register extends Component {
                                   <i className="icon-user"></i>
                                 </InputGroupText>
                               </InputGroupAddon>
-                              <Input type="text" placeholder="Username" autoComplete="username" value={values.fullName}
+                              <Input type="text" placeholder="Username" autoComplete="username" value={values.fullName} name ="fullName"
                                 valid={!errors.fullName}
                                 invalid={touched.fullName && !!errors.fullName}
-                                onChange={(e) => this.setState({details : {...this.state.details , fullName:e.target.value}})}
+                                // onChange={(e) => this.setState({details : {...this.state.details , fullName:e.target.value}})}
+                                onChange = {handleChange}
+                                onBlur={handleBlur}
                               />
                               <FormFeedback>{errors.fullName}</FormFeedback>
                             </InputGroup>
@@ -150,7 +152,7 @@ class Register extends Component {
                               <InputGroupAddon addonType="prepend">
                                 <InputGroupText>@</InputGroupText>
                               </InputGroupAddon>
-                              <Input type="text" placeholder="Email" autoComplete="email" value={values.email}
+                              <Input type="text" placeholder="Email" autoComplete="email" value={values.email} name = 'email'
                                 valid={!errors.email}
                                 invalid={touched.email && !!errors.email}
                                 onChange={(e) => this.setState({details : {...this.state.details , email:e.target.value}})}
@@ -163,7 +165,7 @@ class Register extends Component {
                                   <i className="icon-phone"></i>
                                 </InputGroupText>
                               </InputGroupAddon>
-                              <Input type="number" placeholder="Phone Number" autoComplete="phone-number" value={values.phone}
+                              <Input type="number" placeholder="Phone Number" autoComplete="phone-number" value={values.phone} name = 'phone'
                                 valid={!errors.phone}
                                 invalid={touched.phone && !!errors.phone}
                                 onChange={(e) => this.setState({details : {...this.state.details , phone:e.target.value}})}
@@ -175,8 +177,8 @@ class Register extends Component {
                                 <InputGroupText>
                                   <i className="icon-lock"></i>
                                 </InputGroupText>
-                              </InputGroupAddon>
-                              <Input type="password" placeholder="Password" autoComplete="new-password" value={values.password}
+                              </InputGroupAddon> 
+                              <Input type="password" placeholder="Password" autoComplete="new-password" value={values.password} name = 'password'
                                 valid={!errors.password}
                                 invalid={touched.password && !!errors.password}
                                 onChange={(e) => this.setState({details : {...this.state.details , password:e.target.value}})}

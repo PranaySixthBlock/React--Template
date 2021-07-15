@@ -38,7 +38,7 @@ state = {
   
   componentDidMount(){
     let token=localStorage.getItem("Rjstoken")
-    console.log(token);
+    // console.log(token);
     
     if(!token){
           window.location = '/#/login';
@@ -61,7 +61,7 @@ state = {
         user_management : response.data.data.user_management,
         company_settings : response.data.data.company_settings,
       })
-      console.log(this.state.users , this.state.user_management )
+      // console.log(this.state.users , this.state.user_management )
       })      
     }
 

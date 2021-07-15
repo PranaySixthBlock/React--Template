@@ -38,6 +38,37 @@ export default {
           icon : 'fa fa-gear',
         },
       ]
+    },
+    {
+      name : 'dropdowns',
+      icon : 'fa fa-map-marker',
+      children : [
+        {
+          name : 'Tender Category',
+          icon : 'fa fa-map-marker',
+          // url : '/location/country',
+        },
+        {
+          name : 'Department',
+          icon : 'fa fa-map-marker',
+          // url : '/location/country',
+        },
+        {
+          name : 'Country',
+          icon : 'fa fa-map-marker',
+          url : '/country',
+        },
+        {
+          name : 'State',
+          icon : 'fa fa-map-marker',
+          url : '/state',
+        },
+        {
+          name : 'City',
+          icon : 'fa fa-map-marker',
+          url : '/city',
+        },
+      ]
     }
   
 
