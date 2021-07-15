@@ -3,7 +3,10 @@
 
 export default {
   items: [
-    
+      {
+      name : 'Dashboard',
+      icon : 'fa fa-dashboard'
+      },
     	{
       name: 'User Management',
       url: '/users',
@@ -22,6 +25,21 @@ export default {
       ]
 
     },
+    {
+      name : 'settings',
+      icon : 'fa fa-gear',
+      children : [
+        {
+          name : 'Location',
+          icon : 'fa fa-gear',
+        },
+        {
+          name : 'company settings',
+          icon : 'fa fa-gear',
+        },
+      ]
+    }
+  
 
   //    {
   //     name: 'Administration',

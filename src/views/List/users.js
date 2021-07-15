@@ -42,6 +42,7 @@ export default class ListAssets extends Component {
         {no:"3", name:"krishna", location:"madhapur"},
         {no:"4", name:"sharan", location:"ameerpet"},
         {no:"5", name:"murali", location:"KPHB"}],
+    users : {},
   }
   openForm=()=>{
     this.props.history.push(`/form/new`);
@@ -53,6 +54,7 @@ export default class ListAssets extends Component {
 
   componentDidMount() {
     let companyId = localStorage.getItem("companyId");
+    let userId = localStorage.getItem("userId");
         let token=localStorage.getItem("Rjstoken")
         let config = {
           headers: {
@@ -61,17 +63,23 @@ export default class ListAssets extends Component {
         }
     axios.get(process.env.REACT_APP_BACKEND_API_URL+'/all/company/members/'+ companyId , config)
     .then(response =>{
-      console.log(response.data.data.data)
-      this.setState({
-        AssetsData : response.data.data.data
+        this.setState({
+        AssetsData : response.data.data.data,
+      })
+      axios.get(process.env.REACT_APP_BACKEND_API_URL+'//get/user/permissions/'+ userId , config)
+      .then(response => {
+        this.setState({
+          users : response.data.data.users,
+        })
       })
     })
   }
 
   addCheckBox ( cell , row , enumObject) {
     return (
-      <div>
-        <button type="button" className="btn btn-dark" onClick={() => this.createForm(row._id)}>Edit</button>
+      <div >
+        <i class="fa fa-pencil-square-o fa-lg" onClick={() => this.createForm(row._id)} style={{cursor:'pointer'}} ></i>
+        {/* <button type="button" className="btn btn-dark" >Edit</button> */}
       </div>
     )
   }
@@ -80,21 +88,30 @@ export default class ListAssets extends Component {
     return (<div>{index+1}</div>) 
   }
 
+  addRole = ( cell , row , enumObject) => {
+    // if(row){return row.role.roleName}
+    // else return null
+    return (row.role ? row.role.roleName : null ) 
+  }
+
   render() {
     return (
       <div>
+        {/* {console.log(this.state.AssetsData)} */}
         <ToastContainer
           position="top-right"
           autoClose={3000}
           style={{ zIndex: "1999" }}
         />
-        <Row>
+        <Row>   
           <Col xl={12}>
 
             <Card>
-                <CardHeader className="text-right">
+                {this.state.users.canCreate && (
+                  <CardHeader className="text-right">
                     <Button className="btn btn-primary" onClick={() => this.openForm()}>Create User</Button>
-                </CardHeader>
+                  </CardHeader>
+                )}
               <CardBody>
                 <Suspense
                   fallback={
@@ -117,6 +134,7 @@ export default class ListAssets extends Component {
                     <TableHeaderColumn
                       dataField="_id"
                       dataFormat={this.indexN.bind(this)}
+                      dataAlign="center"
                       // formatExtraData={value1}
                       dataSort
                       export={false}
@@ -124,8 +142,10 @@ export default class ListAssets extends Component {
                     >
                     S.NO
                     </TableHeaderColumn>
+                    
                     <TableHeaderColumn
                       dataField='fullName'
+                      dataAlign="center"
                       dataSort
                       export={false}
                       width="80"
@@ -134,6 +154,7 @@ export default class ListAssets extends Component {
                     </TableHeaderColumn>                    
                     <TableHeaderColumn
                       isKey
+                      dataAlign="center"
                       dataField="email"
                       dataSort
                       tdStyle={{ whiteSpace: "normal" }}
@@ -141,23 +162,28 @@ export default class ListAssets extends Component {
                     >
                        Email
                     </TableHeaderColumn>
+                    
                     <TableHeaderColumn
-                      dataField="phone"
+                      dataField="role"
+                      dataAlign="center"
+                      dataFormat={this.addRole.bind(this)}
                       dataSort
                       width="120"
                     >
-                      Number
+                      Role
                     </TableHeaderColumn>
-                    <TableHeaderColumn
+                    {this.state.users.canUpdate && (
+                      <TableHeaderColumn
                       dataField="_id"
+                      dataAlign="center"
                       dataFormat={this.addCheckBox.bind(this)}
-                      // formatExtraData='_id'
-                      dataSort
+                      // formatExtraData='_id'                    
                       export={true}
                       width="80"
                     >
-                    Edit
+                    Actions
                     </TableHeaderColumn>
+                    )}
                   </BootstrapTable>
                 </Suspense>
               </CardBody>

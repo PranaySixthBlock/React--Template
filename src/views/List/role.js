@@ -104,10 +104,8 @@ export class role extends Component {
                         <td>{data.createdAt}</td>
                         <td>{data.status? 'Active' : 'Inactive'}</td>
                         {/* <td><AppSwitch className={'float-center'} variant={'pill'} label color={'dark'} size={'sm'}/> </td> */}
-                        <td><button type="button" className="btn btn-dark" 
-                              onClick = { () => this.editRoles(data._id)}
-                            > Edit
-                            </button>
+                        <td>
+                            <i class="fa fa-pencil-square-o fa-lg" onClick={ () => this.editRoles(data._id)} style={{cursor:'pointer'}} ></i>
                         </td>
                       </tr>
                       ))}

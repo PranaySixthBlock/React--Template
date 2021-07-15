@@ -37,7 +37,11 @@ export default class roles extends Component {
       { menuId: 0, menuName: "Select All", identifier: "selectAll" },
       { menuId: 1, menuName: "User Management", identifier: "user_management" },
       { menuId: 2, menuName: "Users", identifier: "users" }, 
-      { menuId: 3, menuName: "Permissions", identifier: "permissions" },    
+      { menuId: 3, menuName: "Permissions", identifier: "permissions" }, 
+      { menuId: 4, menuName: "Dashboard", identifier: "dashboard" },    
+      { menuId: 5, menuName: "Settings", identifier: "settings" },    
+      { menuId: 6, menuName: "Location", identifier: "locations" },   
+      { menuId: 7, menuName: "Company Settings", identifier: "company_settings" }, 
       ],      
     permissions: {
       canCreate: false,
@@ -146,39 +150,43 @@ export default class roles extends Component {
         }
       axios.get(process.env.REACT_APP_BACKEND_API_URL+'/get/role/permissions/'+ id , config)
       .then(response => {
-        console.log(response);
-        let responseData = response.data.data.data;
-        let permissions = response.data.data.permissions;
-        let checkedCopy = [];
-            let selectAll = this.state.selectAll;
-            this.state.menus.forEach(function (e, index) {
-              if (e.identifier === "selectAll") {
-                responseData[e.identifier] = {
-                  canCreate: false,
-                  canView: false,
-                  canUpdate: false,
-                  canDelete: false,
-                };
-              }
-              checkedCopy.push({
-                menuId: e.menuId,
-                [e.identifier]: responseData[e.identifier],
+        if(response.status === 200){
+          // console.log(response);
+          let responseData = response.data.data.data;
+          let permissions = response.data.data.permissions;
+          let checkedCopy = [];
+              let selectAll = this.state.selectAll;
+              this.state.menus.forEach(function (e, index) {
+                if (e.identifier === "selectAll") {
+                  responseData[e.identifier] = {
+                    canCreate: false,
+                    canView: false,
+                    canUpdate: false,
+                    canDelete: false,
+                  };
+                }
+                checkedCopy.push({
+                  menuId: e.menuId,
+                  [e.identifier]: responseData[e.identifier],
+                });
               });
-            });
-            this.setState({
-              menus: this.state.menus.sort(function (a, b) {
-                return a.menuId - b.menuId;
-              }),
-              checked: checkedCopy.sort(function (a, b) {
-                return a.menuId - b.menuId;
-              }),
-              roleform: {
-                roleName: responseData.roleName,
-                id: responseData._id,
-              },
-              selectAll: selectAll,
-              permissions: response.data.data.permissions,
-            });
+              this.setState({
+                menus: this.state.menus.sort(function (a, b) {
+                  return a.menuId - b.menuId;
+                }),
+                checked: checkedCopy.sort(function (a, b) {
+                  return a.menuId - b.menuId;
+                }),
+                roleform: {
+                  roleName: responseData.roleName,
+                  id: responseData._id,
+                },
+                selectAll: selectAll,
+                permissions: response.data.data.permissions,
+              });
+        } else{
+          console.log(response);
+        }
       })
     }
 
@@ -254,7 +262,12 @@ export default class roles extends Component {
         .then(response => {
           console.log(response)
           if(response.status === 200) {
-            this.props.history.push("/role/");
+            toast("Role has been updated successfully")
+            setTimeout(
+              function(){
+                this.props.history.push("/role/");
+              }.bind(this),
+             3000);            
           }
           else {console.log(response.message)}
         })
@@ -272,7 +285,12 @@ export default class roles extends Component {
         .then(response => {
           console.log(response)
           if(response.status === 200) {
-            this.props.history.push("/role/");
+            toast("Role has been created successfully")
+            setTimeout(
+              function(){
+                this.props.history.push("/role/");
+              }.bind(this),
+             3000);
           }
           else {console.log(response.message)}
         })

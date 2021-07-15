@@ -79,8 +79,9 @@ export default class EditStorerooms extends Component {
       email : '' ,
       password : '' ,
       address : '' ,
-    }
-    
+    },
+    role : {},
+    options : []    
   };
 
   componentDidMount () {
@@ -92,9 +93,20 @@ export default class EditStorerooms extends Component {
         }
     let userId = localStorage.getItem('userId');
     let companyId = localStorage.getItem('companyId');
-    axios.get(process.env.REACT_APP_BACKEND_API_URL+ '/company/asset/dropdown/values/60ed5d963df1053630d3ae26')
+    axios.get(process.env.REACT_APP_BACKEND_API_URL+ '/company/asset/dropdown/values/' + companyId)
     .then(response => {
       // console.log(response.data.data.roles)
+      let copy = []
+      response.data.data.roles.forEach((e,index) => {
+        copy.push ({
+          label : e.roleName,
+          value : e._id
+        })
+      })
+      this.setState({
+        options : copy
+      })
+      // console.log(this.state.options)
      //  this.setState({
      //    Input : { ...this.state.Input , Role : response.data.data.roles }
      //  })
@@ -103,17 +115,25 @@ export default class EditStorerooms extends Component {
     if(this.props.match.params.id != 'new'){
       axios.get(process.env.REACT_APP_BACKEND_API_URL + '/display/company/member/' + this.props.match.params.id , config)
     .then(response => {
-      console.log(response.data.data.data.role.roleName)
+      // console.log(response.data.data.data)
       let dummy = this.state.Input;
       dummy.fullName = response.data.data.data.fullName
       dummy.phone = response.data.data.data.phone
       dummy.email = response.data.data.data.email
       dummy.password = response.data.data.data.fullName
       dummy.address = response.data.data.data.address
-      dummy.role = response.data.data.data.role.roleName
+      dummy.role = response.data.data.data.role._id
+      // {
+      //   label : response.data.data.data.role.roleName,
+      //   value : response.data.data.data.role._id
+      // }
+
       this.setState({
-        Input : dummy
+        Input : dummy,
+        role : {label : response.data.data.data.role.roleName,
+          value : response.data.data.data.role._id }
       })
+      // console.log(this.state.Input)
     })
     }
     
@@ -135,8 +155,22 @@ export default class EditStorerooms extends Component {
         }
           axios.put(process.env.REACT_APP_BACKEND_API_URL+ '/update/company/member/' + this.props.match.params.id , this.state.Input , config)
           .then (response => {
+            if(response.status === 200){
             console.log(response)
-          })  
+            toast("User has been updated successfully!")
+            setTimeout(
+              function(){
+                this.props.history.push("/users/");
+              }.bind(this),
+             3000);
+            }else{
+              console.log(response)
+            }
+            
+          })
+          .catch(error => {
+            console.log(error)
+          }  )
         }
         else{
           let userId = localStorage.getItem('userId');
@@ -144,7 +178,12 @@ export default class EditStorerooms extends Component {
           .then(response => {
             if(response.status === 200){
               console.log(response)
-              this.props.history.push("/users/");
+              toast("User has been created successfully!")
+              setTimeout(
+                function(){
+                  this.props.history.push("/users/");
+                }.bind(this),
+               3000);
             }
             else{
               console.log(response.message)
@@ -154,11 +193,6 @@ export default class EditStorerooms extends Component {
     
     
   }
-
-  // handleChange = (e) => {
-    
-  // }
-
   
   render() {
     return (
@@ -225,7 +259,7 @@ export default class EditStorerooms extends Component {
                             <FormFeedback>{errors.Name}</FormFeedback>
                           </FormGroup>
                         </Col>
-                        
+                        {/* {console.log(values.role)} */}
                         <Col md={4}>
                           <FormGroup>
                             <Label for="Role">Role *</Label>
@@ -234,7 +268,8 @@ export default class EditStorerooms extends Component {
                               name="Role"
                               id="Role"
                               multi
-                              value={values.role}
+                              value={this.state.role.value}
+                              // defaultValue={values.role}
                               valid={!errors.Role}
                               inputProps={{
                                 autoComplete: "off",
@@ -246,17 +281,16 @@ export default class EditStorerooms extends Component {
                               onChange={(e) => {this.setState(
                                 {
                                   Input : {...this.state.Input , role : e.target.value}
-                                })
-                                
+                                })                            
                                 
                               }}
                               onBlur={handleBlur}
                             >
-                              <option value="0"></option>
-                              <option value="60ed5d963df1053630d3ae24">SUPERUSER</option>
-                              <option value="60ed65b6648f122630ad826a">CEO</option>
-                              <option value="60ed668d648f122630ad82d9">EMPLOYEE</option>
+                              {this.state.options.map((option) => (
+                              <option value={option.value}>{option.label}</option>
+                                ))}
                             </Input>
+                            
                             <FormText className="help-block">Please select your role</FormText>
                             <div
                               style={{
@@ -268,7 +302,7 @@ export default class EditStorerooms extends Component {
                               {errors.Role}
                             </div>
                           </FormGroup>
-                        </Col>
+                        </Col>                  
                         {/* <Col md={4}>
                           <FormGroup>
                             <Label for="Location">Project/Location *</Label>
