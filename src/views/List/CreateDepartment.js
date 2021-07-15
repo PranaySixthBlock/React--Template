@@ -21,30 +21,42 @@ import {
 export default class CreateCountry extends Component {
 
     state = {
-            options : [],
+        options : [ 
+            {
+              value: 'TenderCategory',
+              label : 'TenderCategory'
+            } , 
+            {
+              value: 'Department',
+              label : 'Department'
+            } , 
+            {
+              value: 'Country',
+              label : 'Country'
+            }],
             name : "",
             status : true ,
             Country : ''
     }
 
     componentDidMount () {
-        let companyId = localStorage.getItem("companyId");
-        console.log(companyId);
-        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/' + companyId)
-        .then (response => {
-            // console.log(response.data.data)
-            let copy = []
-            response.data.data.forEach((e,index) => {
-                copy.push({
-                    label : e.name,
-                    value : e._id
-                })
-            })
-            this.setState({
-                options : copy,
-            })
-            console.log(this.state.options)
-        })
+        // let companyId = localStorage.getItem("companyId");
+        // console.log(companyId);
+        // axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/' + companyId)
+        // .then (response => {
+        //     // console.log(response.data.data)
+        //     let copy = []
+        //     response.data.data.forEach((e,index) => {
+        //         copy.push({
+        //             label : e.name,
+        //             value : e._id
+        //         })
+        //     })
+        //     this.setState({
+        //         options : copy,
+        //     })
+        //     console.log(this.state.options)
+        // })
         let id = this.props.match.params.id;
         if(id != 'new'){
         axios.get(process.env.REACT_APP_BACKEND_API_URL + '/get/company/state/dropdown/' + id)
@@ -124,7 +136,7 @@ export default class CreateCountry extends Component {
                       <Row form>
                       <Col md={4}>
                           <FormGroup>
-                            <Label for="Country">Country *</Label>
+                            <Label for="Country">Type *</Label>
                             <Input
                               type='select'
                               name="Country"
@@ -153,7 +165,7 @@ export default class CreateCountry extends Component {
                                 ))}
                             </Input>
                             
-                            <FormText className="help-block">Please select your Country</FormText>
+                            <FormText className="help-block">Please select the Type</FormText>
                             <div
                               style={{
                                 color: "#f86c6b",
@@ -167,7 +179,7 @@ export default class CreateCountry extends Component {
                         </Col> 
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="name">State *</Label>
+                            <Label for="name">Department *</Label>
                             <Input
                               type="text"
                               name="name"
@@ -180,7 +192,7 @@ export default class CreateCountry extends Component {
                               onBlur={handleBlur}
                               value={values.name}
                             />
-                            <FormText className="help-block">Please enter the state name</FormText>
+                            <FormText className="help-block">Please enter the department name</FormText>
                             <FormFeedback>{errors.name}</FormFeedback>
                           </FormGroup>
                         </Col>

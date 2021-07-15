@@ -155,7 +155,8 @@ class Register extends Component {
                               <Input type="text" placeholder="Email" autoComplete="email" value={values.email} name = 'email'
                                 valid={!errors.email}
                                 invalid={touched.email && !!errors.email}
-                                onChange={(e) => this.setState({details : {...this.state.details , email:e.target.value}})}
+                                // onChange={(e) => this.setState({details : {...this.state.details , email:e.target.value}})}
+                                onChange = {handleChange}
                               />
                               <FormFeedback>{errors.email}</FormFeedback>
                             </InputGroup>
@@ -168,7 +169,8 @@ class Register extends Component {
                               <Input type="number" placeholder="Phone Number" autoComplete="phone-number" value={values.phone} name = 'phone'
                                 valid={!errors.phone}
                                 invalid={touched.phone && !!errors.phone}
-                                onChange={(e) => this.setState({details : {...this.state.details , phone:e.target.value}})}
+                                // onChange={(e) => this.setState({details : {...this.state.details , phone:e.target.value}})}
+                                onChange = {handleChange}
                               />
                               <FormFeedback>{errors.phone}</FormFeedback>
                             </InputGroup>
@@ -181,7 +183,8 @@ class Register extends Component {
                               <Input type="password" placeholder="Password" autoComplete="new-password" value={values.password} name = 'password'
                                 valid={!errors.password}
                                 invalid={touched.password && !!errors.password}
-                                onChange={(e) => this.setState({details : {...this.state.details , password:e.target.value}})}
+                                // onChange={(e) => this.setState({details : {...this.state.details , password:e.target.value}})}
+                                onChange = {handleChange}
                               />
                               <FormFeedback>{errors.password}</FormFeedback>
                             </InputGroup>
@@ -191,10 +194,11 @@ class Register extends Component {
                                   <i className="icon-home"></i>
                                 </InputGroupText>
                               </InputGroupAddon>
-                              <Input type="text" placeholder="Company Name" autoComplete="company" value={values.companyName}
+                              <Input type="text" placeholder="Company Name" autoComplete="company" value={values.companyName} name="companyName" id='companyName'
                                 valid={!errors.companyName}
                                 invalid={touched.companyName && !!errors.companyName}
-                                onChange={(e) => this.setState({details : {...this.state.details , companyName:e.target.value}})}
+                                // onChange={(e) => this.setState({details : {...this.state.details , companyName:e.target.value}})}
+                                onChange = {handleChange}
                               />
                               <FormFeedback>{errors.companyName}</FormFeedback>
                             </InputGroup>

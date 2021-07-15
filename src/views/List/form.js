@@ -95,7 +95,7 @@ export default class EditStorerooms extends Component {
     let companyId = localStorage.getItem('companyId');
     axios.get(process.env.REACT_APP_BACKEND_API_URL+ '/company/asset/dropdown/values/' + companyId)
     .then(response => {
-      // console.log(response.data.data.roles)
+      console.log(response.data.data.roles)
       let copy = []
       response.data.data.roles.forEach((e,index) => {
         copy.push ({
@@ -239,24 +239,25 @@ export default class EditStorerooms extends Component {
                       <Row form>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="Name">Name *</Label>
+                            <Label for="fullName">Name *</Label>
                             <Input
                               type="text"
-                              name="Name"
-                              id="Name"
-                              valid={!errors.Name}
-                              invalid={touched.Name && !!errors.Name}
+                              name="fullName"
+                              id="fullName"
+                              valid={!errors.fullName}
+                              invalid={touched.fullName && !!errors.fullName}
                               required
-                              onChange={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , fullName : e.target.value}
-                                })
-                                }}
+                              // onChange={(e) => {this.setState(
+                              //   {
+                              //     Input : {...this.state.Input , fullName : e.target.value}
+                              //   })
+                              //   }}
+                              onChange = {handleChange}
                               onBlur={handleBlur}
                               value={values.fullName}
                             />
                             <FormText className="help-block">Please enter your name</FormText>
-                            <FormFeedback>{errors.Name}</FormFeedback>
+                            <FormFeedback>{errors.fullName}</FormFeedback>
                           </FormGroup>
                         </Col>
                         {/* {console.log(values.role)} */}
@@ -346,68 +347,71 @@ export default class EditStorerooms extends Component {
                         </Col> */}
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="number">Phone Number *</Label>
+                            <Label for="phone">Phone Number *</Label>
                             <Input
                               type="text"
-                              name="number"
-                              id="number"
-                              valid={!errors.number}
-                              invalid={touched.number && !!errors.number}
+                              name="phone"
+                              id="phone"
+                              valid={!errors.phone}
+                              invalid={touched.phone && !!errors.phone}
                               required
-                              onChange={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , phone : e.target.value}
-                                })                         
-                                }}
+                              // onChange={(e) => {this.setState(
+                              //   {
+                              //     Input : {...this.state.Input , phone : e.target.value}
+                              //   })                         
+                              //   }}
+                              onChange = {handleChange}
                               onBlur={handleBlur}
                               value={values.phone}
                             />
                             <FormText className="help-block">Please enter your phone number</FormText>
-                            <FormFeedback>{errors.number}</FormFeedback>
+                            <FormFeedback>{errors.phone}</FormFeedback>
                           </FormGroup>
                         </Col>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="Email">Email *</Label>
+                            <Label for="email">Email *</Label>
                             <Input
                               type="text"
-                              name="Email"
-                              id="Email"
-                              valid={!errors.Email}
-                              invalid={touched.Email && !!errors.Email}
+                              name="email"
+                              id="email"
+                              valid={!errors.email}
+                              invalid={touched.email && !!errors.email}
                               required
-                              onChange={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , email : e.target.value}
-                                })                         
-                                }}
+                              // onChange={(e) => {this.setState(
+                              //   {
+                              //     Input : {...this.state.Input , email : e.target.value}
+                              //   })                         
+                              //   }}
+                              onChange = {handleChange}
                               onBlur={handleBlur}
                               value={values.email}
                             />
                             <FormText className="help-block">Please enter your email</FormText>
-                            <FormFeedback>{errors.Email}</FormFeedback>
+                            <FormFeedback>{errors.email}</FormFeedback>
                           </FormGroup>
                         </Col>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="Password">Password *</Label>
+                            <Label for="password">Password *</Label>
                             <Input
                               type="password"
-                              name="Password"
-                              id="Password"
-                              valid={!errors.Password}
-                              invalid={touched.Password && !!errors.Password}
+                              name="password"
+                              id="password"
+                              valid={!errors.password}
+                              invalid={touched.password && !!errors.password}
                               required
-                              onChange={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , password : e.target.value}
-                                })                         
-                                }}
+                              // onChange={(e) => {this.setState(
+                              //   {
+                              //     Input : {...this.state.Input , password : e.target.value}
+                              //   })                         
+                              //   }}
+                              onChange = {handleChange}
                               onBlur={handleBlur}
                               value={values.password}
                             />
                             <FormText className="help-block">Please enter your password</FormText>
-                            <FormFeedback>{errors.Password}</FormFeedback>
+                            <FormFeedback>{errors.password}</FormFeedback>
                           </FormGroup>
                         </Col>
                         <Col md={4}>

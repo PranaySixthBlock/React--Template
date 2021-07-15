@@ -107,7 +107,8 @@ export default class CreateCountry extends Component {
                               valid={!errors.name}
                               invalid={touched.name && !!errors.name}
                               required
-                              onChange={(e) => this.setState({name:e.target.value})}
+                              // onChange={(e) => this.setState({name:e.target.value})}
+                              onChange = {handleChange}
                               onBlur={handleBlur}
                               value={values.name}
                             />

@@ -49,32 +49,32 @@ export default class Country extends Component {
     }
 
     openForm=()=>{
-        this.props.history.push(`/createCity/new`);
+        this.props.history.push(`/createDepartment/new`);
     }
     
     createForm = (id)=> {
-        this.props.history.push(`/createCity/${id}`);
+        this.props.history.push(`/createDepartment/${id}`);
     }
 
-    addState = ( cell , row , enumObject) => {
+    addCountry = ( cell , row , enumObject) => {
         // if(row){return row.role.roleName}
         // else return null
         // return (row.name ? row.name : null ) 
-        // console.log(row.stateId.name? row.stateId.name : null)
-        return(row.stateId ? row.stateId.name : null)
-    }
+        return(row.countryId ? row.countryId.name : null)
+      }
     addStatus ( cell , row , enumObject) {
         return(row.status? 'Active' : 'Inactive');
     }
+
     componentDidMount() {
-        let companyId = localStorage.getItem("companyId");
-        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/city/dropdowns/' + companyId)
-        .then (response => {
-            console.log(response.data.data)
-            this.setState({
-                AssetsData : response.data.data
-            })
-        })
+        // let companyId = localStorage.getItem("companyId");
+        // axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/state/dropdowns/' + companyId)
+        // .then (response => {
+        //     console.log(response.data.data)
+        //     this.setState({
+        //         AssetsData : response.data.data
+        //     })
+        // })
     }
 
     render() {
@@ -82,10 +82,12 @@ export default class Country extends Component {
             <div>
                 <Row>   
           <Col xl={12}>
+
             <Card>
-                <CardHeader className="text-right">
-                    <Button className="btn btn-primary" onClick={() => this.openForm()}>Create City</Button>
-                </CardHeader>
+                
+                  <CardHeader className="text-right">
+                    <Button className="btn btn-primary" onClick={() => this.openForm()}>Create Department</Button>
+                  </CardHeader>
                
               <CardBody>
                 <Suspense
@@ -120,11 +122,11 @@ export default class Country extends Component {
                     <TableHeaderColumn
                     //   dataField="stateId"
                       dataAlign="center"
-                      dataFormat={this.addState.bind(this)}
+                      dataFormat={this.addCountry.bind(this)}
                       dataSort
                       width="120"
                     >
-                      State
+                      Country
                     </TableHeaderColumn>
                     <TableHeaderColumn
                       dataField='name'
@@ -133,14 +135,14 @@ export default class Country extends Component {
                       export={false}
                       width="120"
                     >
-                      City
+                      State
                     </TableHeaderColumn>                    
                     <TableHeaderColumn
                       isKey
                       dataAlign="center"
-                      dataField="status"
-                      dataFormat={this.addStatus.bind(this)}
+                      dataField= "status" 
                       dataSort
+                      dataFormat={this.addStatus.bind(this)}
                     //   tdStyle={{ whiteSpace: "normal" }}
                       width="100"
                     >

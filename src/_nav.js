@@ -46,12 +46,12 @@ export default {
         {
           name : 'Tender Category',
           icon : 'fa fa-map-marker',
-          // url : '/location/country',
+          url : '/tenderCategory',
         },
         {
           name : 'Department',
           icon : 'fa fa-map-marker',
-          // url : '/location/country',
+          url : '/department',
         },
         {
           name : 'Country',
