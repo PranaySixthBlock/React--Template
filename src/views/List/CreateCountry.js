@@ -16,47 +16,80 @@ import {
   } from "reactstrap";
   import { Formik } from "formik";
   import { AppSwitch } from '@coreui/react'
+  import * as Yup from 'yup';
   import axios from 'axios'
 
+  const validationSchema = function (values) {
+    return Yup.object().shape({
+      name: Yup.string()
+      .required('Email is required'),
+    })
+  }
+
+  const validate = (getValidationSchema) => {
+    return (values) => {
+      const validationSchema = getValidationSchema(values)
+      try {
+        validationSchema.validateSync(values, { abortEarly: false })
+        return {}
+      } catch (error) {
+        return getErrorsFromValidationError(error)
+      }
+    }
+  }
+  const getErrorsFromValidationError = (validationError) => {
+    const FIRST_ERROR = 0
+    return validationError.inner.reduce((errors, error) => {
+      return {
+        ...errors,
+        [error.path]: error.errors[FIRST_ERROR],
+      }
+    }, {})
+  }
 export default class CreateCountry extends Component {
 
     state = {
-        
+            type : this.props.match.params.type,
             name : "",
-            status : true ,
-        
+            status : '' ,        
     }
 
     componentDidMount () {
         let id = this.props.match.params.id;
+        let type = this.props.match.params.type;
+        console.log(type)
+        if(id != 'new'){
         axios.get(process.env.REACT_APP_BACKEND_API_URL + '/get/company/dropdown/' + id)
         .then(response => {
             console.log(response.data.data)
             this.setState({name:response.data.data[0].name})
+            this.setState({status:response.data.data[0].status})
         })
-    }
+    }}
 
     onSubmit = () => {
         let id = this.props.match.params.id;
         if(id != 'new'){
             axios.put(process.env.REACT_APP_BACKEND_API_URL + '/update/company/dropdown/' + id , {
                 name : this.state.name,
-                status:this.state.status? "1" : "0"
+                status:this.state.status? "1" : "0",
+                type : this.state.type
             })
             .then (response => {
                 console.log(response)
-                this.props.history.push("/country");
+                this.props.history.push(`/${this.state.type}`);
             })
         }
         else{
             let companyId = localStorage.getItem("companyId");
         axios.post(process.env.REACT_APP_BACKEND_API_URL + '/create/new/user/dropdown/' + companyId , {
             name : this.state.name,
-            status : this.state.status
+            status : this.state.status,
+            type : this.state.type
         })
         .then (response => {
             console.log(response);
-            this.props.history.push("/country");
+            this.props.history.push(`/${this.state.type}`);
         })
         }        
     }
@@ -76,6 +109,7 @@ export default class CreateCountry extends Component {
                 <Formik
                   enableReinitialize={true}
                   initialValues={this.state}
+                  validate={validate(validationSchema)}
                   // validate={validationSchema}
                 //   validationSchema = {DisplayingErrorMessagesSchema}
                   onSubmit={this.onSubmit}
@@ -99,20 +133,20 @@ export default class CreateCountry extends Component {
                       <Row form>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="name">Country *</Label>
+                            <Label for="name">{this.state.type }</Label>
                             <Input
                               type="text"
                               name="name"
-                              id="name"
+                              // id="name"
                               valid={!errors.name}
                               invalid={touched.name && !!errors.name}
                               required
                               // onChange={(e) => this.setState({name:e.target.value})}
                               onChange = {handleChange}
-                              onBlur={handleBlur}
+                              onBlur={(e) => this.setState({name:e.target.value})}
                               value={values.name}
                             />
-                            <FormText className="help-block">Please enter the coutry name</FormText>
+                            <FormText className="help-block">Please enter the {this.state.type} name</FormText>
                             <FormFeedback>{errors.name}</FormFeedback>
                           </FormGroup>
                         </Col>

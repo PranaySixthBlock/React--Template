@@ -46,7 +46,7 @@ export default {
         {
           name : 'Tender Category',
           icon : 'fa fa-map-marker',
-          url : '/tenderCategory',
+          url : '/tender',
         },
         {
           name : 'Department',

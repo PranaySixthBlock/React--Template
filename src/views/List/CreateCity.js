@@ -143,8 +143,7 @@ export default class CreateCountry extends Component {
                               onChange={(e) => {this.setState(
                                 {
                                    state : e.target.value
-                                })                          
-                              }}
+                                }) }}
                               onBlur={handleBlur}
                             >
                               {this.state.options.map((option) => (
@@ -176,7 +175,7 @@ export default class CreateCountry extends Component {
                               required
                               // onChange={(e) => this.setState({name:e.target.value})}
                               onChange = {handleChange}
-                              onBlur={handleBlur}
+                              onBlur={(e) => this.setState({name:e.target.value})}
                               value={values.name}
                             />
                             <FormText className="help-block">Please enter the city name</FormText>

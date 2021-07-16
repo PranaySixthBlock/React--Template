@@ -24,13 +24,14 @@ export default class CreateCountry extends Component {
             options : [],
             name : "",
             status : true ,
-            Country : ''
+            Country : '',
+            type : 'country'
     }
 
     componentDidMount () {
         let companyId = localStorage.getItem("companyId");
         console.log(companyId);
-        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/' + companyId)
+        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/bytype/'+ this.state.type + '/' + companyId)
         .then (response => {
             // console.log(response.data.data)
             let copy = []
@@ -59,6 +60,7 @@ export default class CreateCountry extends Component {
 
     onSubmit = () => {
         let id = this.props.match.params.id;
+        console.log(this.state)
         if(id != 'new'){
             axios.put(process.env.REACT_APP_BACKEND_API_URL + '/update/company/state/dropdown/' + id , {
                 name : this.state.name,
@@ -74,6 +76,7 @@ export default class CreateCountry extends Component {
             let companyId = localStorage.getItem("companyId");
         axios.post(process.env.REACT_APP_BACKEND_API_URL + '/create/new/state/dropdown/' + companyId , {
             name : this.state.name,
+            status:this.state.status? "1" : "0",
             countryId : this.state.Country
         })
         .then (response => {
@@ -140,12 +143,11 @@ export default class CreateCountry extends Component {
                               }}
                               invalid={touched.Country && !!errors.Country}
                               options={this.state.locationData }
-                              onChange={(e) => {this.setState(
+                              onChange={ (e) => {this.setState(
                                 {
                                    Country : e.target.value
-                                })                            
-                                
-                              }}
+                                }) }}                      
+                                                             
                               onBlur={handleBlur}
                             >
                               {this.state.options.map((option) => (
@@ -177,7 +179,7 @@ export default class CreateCountry extends Component {
                               required
                               // onChange={(e) => this.setState({name:e.target.value})}
                               onChange = {handleChange}
-                              onBlur={handleBlur}
+                              onBlur={(e) => this.setState({name:e.target.value})}
                               value={values.name}
                             />
                             <FormText className="help-block">Please enter the state name</FormText>

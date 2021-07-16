@@ -28,12 +28,10 @@ export default class Country extends Component {
 
     state = {
         AssetsData: [
-            {no:"1", name:"chandu", location:"vizag"},
-            {no:"2", name:"Aravind", location:"hyd"},
-            {no:"3", name:"krishna", location:"madhapur"},
-            {no:"4", name:"sharan", location:"ameerpet"},
-            {no:"5", name:"murali", location:"KPHB"}],
-    }
+            
+        ],
+        type : 'country'
+      }
 
     indexN(cell, row, enumObject, index) {
         return (<div>{index+1}</div>) 
@@ -52,16 +50,16 @@ export default class Country extends Component {
     }
 
     openForm=()=>{
-        this.props.history.push(`/createCountry/new`);
+        this.props.history.push(`/createCountry/new/country`);
     }
     
     createForm = (id)=> {
-        this.props.history.push(`/createCountry/${id}`);
+        this.props.history.push(`/createCountry/${id}/country`);
     }
 
     componentDidMount() {
         let companyId = localStorage.getItem("companyId");
-        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/' + companyId)
+        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/bytype/'+ this.state.type + '/' + companyId)
         .then (response => {
             console.log(response.data.data)
             this.setState({

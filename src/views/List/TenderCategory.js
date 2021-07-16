@@ -27,12 +27,8 @@ import {
 export default class Country extends Component {
 
     state = {
-        AssetsData: [
-            {no:"1", name:"chandu", location:"vizag"},
-            {no:"2", name:"Aravind", location:"hyd"},
-            {no:"3", name:"krishna", location:"madhapur"},
-            {no:"4", name:"sharan", location:"ameerpet"},
-            {no:"5", name:"murali", location:"KPHB"}],
+        AssetsData: [ ],
+        type : 'tender'
     }
 
     indexN(cell, row, enumObject, index) {
@@ -49,11 +45,11 @@ export default class Country extends Component {
     }
 
     openForm=()=>{
-        this.props.history.push(`/createTender/new`);
+        this.props.history.push(`/createCountry/new/tender`);
     }
     
     createForm = (id)=> {
-        this.props.history.push(`/createTender/${id}`);
+        this.props.history.push(`/createCountry/${id}/tender`);
     }
 
     addCountry = ( cell , row , enumObject) => {
@@ -67,14 +63,14 @@ export default class Country extends Component {
     }
 
     componentDidMount() {
-        // let companyId = localStorage.getItem("companyId");
-        // axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/state/dropdowns/' + companyId)
-        // .then (response => {
-        //     console.log(response.data.data)
-        //     this.setState({
-        //         AssetsData : response.data.data
-        //     })
-        // })
+        let companyId = localStorage.getItem("companyId");
+        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/bytype/' +  this.state.type + '/' +companyId)
+        .then (response => {
+            console.log(response.data.data)
+            this.setState({
+                AssetsData : response.data.data
+            })
+        })
     }
 
     render() {
@@ -119,15 +115,7 @@ export default class Country extends Component {
                     >
                     S.NO
                     </TableHeaderColumn>
-                    <TableHeaderColumn
-                    //   dataField="stateId"
-                      dataAlign="center"
-                      dataFormat={this.addCountry.bind(this)}
-                      dataSort
-                      width="120"
-                    >
-                      Country
-                    </TableHeaderColumn>
+                    
                     <TableHeaderColumn
                       dataField='name'
                       dataAlign="center"
@@ -135,7 +123,7 @@ export default class Country extends Component {
                       export={false}
                       width="120"
                     >
-                      State
+                      Tender
                     </TableHeaderColumn>                    
                     <TableHeaderColumn
                       isKey
