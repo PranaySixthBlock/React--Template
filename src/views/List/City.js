@@ -27,12 +27,7 @@ import {
 export default class Country extends Component {
 
     state = {
-        AssetsData: [
-            {no:"1", name:"chandu", location:"vizag"},
-            {no:"2", name:"Aravind", location:"hyd"},
-            {no:"3", name:"krishna", location:"madhapur"},
-            {no:"4", name:"sharan", location:"ameerpet"},
-            {no:"5", name:"murali", location:"KPHB"}],
+        AssetsData: [ ],
     }
 
     indexN(cell, row, enumObject, index) {

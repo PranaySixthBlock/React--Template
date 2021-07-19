@@ -18,6 +18,8 @@ import {
   import { AppSwitch } from '@coreui/react'
   import * as Yup from 'yup';
   import axios from 'axios'
+  import { toast, ToastContainer } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 
   const validationSchema = function (values) {
     return Yup.object().shape({
@@ -76,8 +78,16 @@ export default class CreateCountry extends Component {
                 type : this.state.type
             })
             .then (response => {
-                console.log(response)
-                this.props.history.push(`/${this.state.type}`);
+                // console.log(response)
+                if(response.status === 200) {
+                  toast.success(this.state.type + " has been updated successfully")
+                  setTimeout(
+                    function(){
+                      this.props.history.push(`/${this.state.type}`);
+                    }.bind(this),
+                   3000);            
+                }
+                else {console.log(response.message)}
             })
         }
         else{
@@ -89,13 +99,30 @@ export default class CreateCountry extends Component {
         })
         .then (response => {
             console.log(response);
-            this.props.history.push(`/${this.state.type}`);
+            if(response.status === 200) {
+              toast.success(this.state.type + " has been updated successfully")
+              setTimeout(
+                function(){
+                  this.props.history.push(`/${this.state.type}`);
+                }.bind(this),
+               3000);            
+            }
+            else {console.log(response.message)}
+            // this.props.history.push(`/${this.state.type}`);
         })
+        .catch(err => console.error(err))
         }        
     }
     render() {
         return (
-            <div>
+            <div className="animated fadeIn">
+              <br></br>
+              <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          style={{ zIndex: "199" }}
+        />
+        <br></br>
                 <Row>
           <Col sm={12} style={{ marginTop:'50px'}}>
             <Card>
@@ -133,7 +160,7 @@ export default class CreateCountry extends Component {
                       <Row form>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="name">{this.state.type }</Label>
+                            <Label for="name">{this.state.type } *</Label>
                             <Input
                               type="text"
                               name="name"

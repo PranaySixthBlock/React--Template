@@ -26,6 +26,11 @@ export default {
 
     },
     {
+      name : 'Tender',
+      icon : 'fa fa-gavel',
+      url : '/tenderCreation'
+    },
+    {
       name : 'settings',
       icon : 'fa fa-gear',
       children : [

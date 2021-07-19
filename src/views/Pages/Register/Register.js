@@ -144,7 +144,7 @@ class Register extends Component {
                                 invalid={touched.fullName && !!errors.fullName}
                                 // onChange={(e) => this.setState({details : {...this.state.details , fullName:e.target.value}})}
                                 onChange = {handleChange}
-                                onBlur={handleBlur}
+                                onBlur={(e) => this.setState({details : {...this.state.details , fullName:e.target.value}})}
                               />
                               <FormFeedback>{errors.fullName}</FormFeedback>
                             </InputGroup>
@@ -157,6 +157,7 @@ class Register extends Component {
                                 invalid={touched.email && !!errors.email}
                                 // onChange={(e) => this.setState({details : {...this.state.details , email:e.target.value}})}
                                 onChange = {handleChange}
+                                onBlur={(e) => this.setState({details : {...this.state.details , email:e.target.value}})}
                               />
                               <FormFeedback>{errors.email}</FormFeedback>
                             </InputGroup>
@@ -171,6 +172,7 @@ class Register extends Component {
                                 invalid={touched.phone && !!errors.phone}
                                 // onChange={(e) => this.setState({details : {...this.state.details , phone:e.target.value}})}
                                 onChange = {handleChange}
+                                onBlur={(e) => this.setState({details : {...this.state.details , phone:e.target.value}})}
                               />
                               <FormFeedback>{errors.phone}</FormFeedback>
                             </InputGroup>
@@ -185,6 +187,7 @@ class Register extends Component {
                                 invalid={touched.password && !!errors.password}
                                 // onChange={(e) => this.setState({details : {...this.state.details , password:e.target.value}})}
                                 onChange = {handleChange}
+                                onBlur={(e) => this.setState({details : {...this.state.details , password:e.target.value}})}
                               />
                               <FormFeedback>{errors.password}</FormFeedback>
                             </InputGroup>
@@ -199,6 +202,7 @@ class Register extends Component {
                                 invalid={touched.companyName && !!errors.companyName}
                                 // onChange={(e) => this.setState({details : {...this.state.details , companyName:e.target.value}})}
                                 onChange = {handleChange}
+                                onBlur={(e) => this.setState({details : {...this.state.details , companyName:e.target.value}})}
                               />
                               <FormFeedback>{errors.companyName}</FormFeedback>
                             </InputGroup>

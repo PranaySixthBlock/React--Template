@@ -49,68 +49,7 @@ export default class roles extends Component {
       canDelete: false,
     },
   };
-
-    // componentDidMount() {
-    //   var id = this.state.id ;
-    //   console.log(id);
-    //   let token=localStorage.getItem("Rjstoken")
-    //     let config = {
-    //       headers: {
-    //         'Authorization': token
-    //       }
-    //     }
-    //   axios.get(process.env.REACT_APP_BACKEND_API_URL+'/get/role/permissions/'+ id , config)
-    //   .then (response => {
-    //     console.log(response.data.data)
-    //     let dummy = this.state.Data;
-    //     dummy[1] = response.data.data.data.user_management
-    //     dummy[2] = response.data.data.data.users
-    //     dummy[3] = response.data.data.permissions
-    //     this.setState({
-    //       Data : dummy
-    //     })
-    //   })
-    // }
-
-    // onSubmit = () => {
-    //   // alert(`${JSON.stringify(this.state.Input)} ${JSON.stringify(this.state.Data)}`);
-    //   let companyId = localStorage.getItem("companyId");
-    //   let userId = localStorage.getItem("userId");
-    //   let token=localStorage.getItem("Rjstoken")
-    //     let config = {
-    //       headers: {
-    //         'Authorization': token
-    //       }
-    //     }
-    //   axios.post(process.env.REACT_APP_BACKEND_API_URL+'/create/new/user/role/'+ companyId +'/'+ userId , {
-    //     "roleName": this.state.Input.Role,
-    //     "user_management":{
-    //           "canCreate":this.state.Data[1].canCreate,
-    //           "canView" : this.state.Data[1].canView,
-    //           "canUpdate":this.state.Data[1].canUpdate,
-    //           "canDelete":this.state.Data[1].canDelete
-    //     },
-    //     "users":{
-    //           "canCreate":this.state.Data[2].canCreate,
-    //           "canView" : this.state.Data[2].canView,
-    //           "canUpdate":this.state.Data[2].canUpdate,
-    //           "canDelete":this.state.Data[2].canDelete
-    //     },
-    //     "permissions":{
-    //           "canCreate":this.state.Data[3].canCreate,
-    //           "canView" : this.state.Data[3].canView,
-    //           "canUpdate":this.state.Data[3].canUpdate,
-    //           "canDelete":this.state.Data[3].canDelete
-    //     }
-    //   } , config )
-    //   .then(response => {
-    //     console.log(response);
-    //   })
-    //   .catch(err => {
-    //     console.log(err.response.data)
-    //   })
-    // }
-    
+  
     componentDidMount() {
       if (this.props.match.params.id != 'new') {
         this.getRoleData(this.props.match.params.id);
@@ -262,7 +201,7 @@ export default class roles extends Component {
         .then(response => {
           console.log(response)
           if(response.status === 200) {
-            toast("Role has been updated successfully")
+            toast.success("Role has been updated successfully")
             setTimeout(
               function(){
                 this.props.history.push("/role/");
@@ -285,7 +224,7 @@ export default class roles extends Component {
         .then(response => {
           console.log(response)
           if(response.status === 200) {
-            toast("Role has been created successfully")
+            toast.success("Role has been created successfully")
             setTimeout(
               function(){
                 this.props.history.push("/role/");

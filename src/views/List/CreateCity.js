@@ -17,6 +17,9 @@ import {
   import { Formik } from "formik";
   import { AppSwitch } from '@coreui/react'
   import axios from 'axios'
+  import { toast, ToastContainer } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
+
 
 export default class CreateCountry extends Component {
 
@@ -34,6 +37,10 @@ export default class CreateCountry extends Component {
         .then (response => {
             // console.log(response.data.data)
             let copy = []
+            copy.push({
+              label : 'Select',
+              value : ''
+            })
             response.data.data.forEach((e,index) => {
                 copy.push({
                     label : e.name,
@@ -66,8 +73,16 @@ export default class CreateCountry extends Component {
                 stateId : this.state.state
             })
             .then (response => {
-                console.log(response)
-                this.props.history.push("/city");
+                // console.log(response)
+                if(response.status === 200) {
+                  toast.success("City has been updated successfully")
+                  setTimeout(
+                    function(){
+                      this.props.history.push("/city/");
+                    }.bind(this),
+                   3000);            
+                }
+                else {console.log(response.message)}
             })
         }
         else{
@@ -77,8 +92,16 @@ export default class CreateCountry extends Component {
             stateId : this.state.state
         })
         .then (response => {
-            console.log(response);
-            this.props.history.push("/city");
+            // console.log(response);
+            if(response.status === 200) {
+              toast.success("City has been created successfully")
+              setTimeout(
+                function(){
+                  this.props.history.push("/city/");
+                }.bind(this),
+               3000);            
+            }
+            else {console.log(response.message)}
         })
         .catch (err => {
             console.log(err);
@@ -87,15 +110,18 @@ export default class CreateCountry extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="animated fadeIn">
+              <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          style={{ zIndex: "1999" }}
+        />
+        <br></br>
                 <Row>
           <Col sm={12} style={{ marginTop:'50px'}}>
             <Card>
               <CardHeader>
-                <strong>
-                  <i className="chevron-bottom pr-1"></i>
-                  {this.state.id ? "Edit" : `Create`}
-                </strong>
+              
               </CardHeader>
               <CardBody>
                 <Formik

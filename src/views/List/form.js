@@ -97,6 +97,10 @@ export default class EditStorerooms extends Component {
     .then(response => {
       console.log(response.data.data.roles)
       let copy = []
+      copy.push({
+        label : 'Select',
+        value : ''
+      })
       response.data.data.roles.forEach((e,index) => {
         copy.push ({
           label : e.roleName,
@@ -105,12 +109,7 @@ export default class EditStorerooms extends Component {
       })
       this.setState({
         options : copy
-      })
-      // console.log(this.state.options)
-     //  this.setState({
-     //    Input : { ...this.state.Input , Role : response.data.data.roles }
-     //  })
-     //  console.log(this.state.Input.Role)     
+      })    
     })
     if(this.props.match.params.id != 'new'){
       axios.get(process.env.REACT_APP_BACKEND_API_URL + '/display/company/member/' + this.props.match.params.id , config)
@@ -157,7 +156,7 @@ export default class EditStorerooms extends Component {
           .then (response => {
             if(response.status === 200){
             console.log(response)
-            toast("User has been updated successfully!")
+            toast.success("User has been updated successfully!")
             setTimeout(
               function(){
                 this.props.history.push("/users/");
@@ -178,7 +177,7 @@ export default class EditStorerooms extends Component {
           .then(response => {
             if(response.status === 200){
               console.log(response)
-              toast("User has been created successfully!")
+              toast.success("User has been created successfully!")
               setTimeout(
                 function(){
                   this.props.history.push("/users/");
@@ -246,14 +245,13 @@ export default class EditStorerooms extends Component {
                               id="fullName"
                               valid={!errors.fullName}
                               invalid={touched.fullName && !!errors.fullName}
-                              required
-                              // onChange={(e) => {this.setState(
-                              //   {
-                              //     Input : {...this.state.Input , fullName : e.target.value}
-                              //   })
-                              //   }}
+                              required                            
                               onChange = {handleChange}
-                              onBlur={handleBlur}
+                              onBlur={(e) => {this.setState(
+                                   {
+                                     Input : {...this.state.Input , fullName : e.target.value}
+                                   })
+                                   }}
                               value={values.fullName}
                             />
                             <FormText className="help-block">Please enter your name</FormText>
@@ -303,48 +301,7 @@ export default class EditStorerooms extends Component {
                               {errors.Role}
                             </div>
                           </FormGroup>
-                        </Col>                  
-                        {/* <Col md={4}>
-                          <FormGroup>
-                            <Label for="Location">Project/Location *</Label>
-                            <Input
-                              type='select'
-                              name="Location"
-                              id="Location"
-                              multi
-                              value={values.Location}
-                              valid={!errors.Location}
-                              inputProps={{
-                                autoComplete: "off",
-                                autoCorrect: "off",
-                                spellCheck: "off",
-                              }}
-                              invalid={touched.Location && !!errors.Location}
-                              options={this.state.locationData}
-                              onChange={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , Location : e.target.value}
-                                })                         
-                                }}
-                              onBlur={handleBlur}
-                            >
-                              <option value="0"></option>
-                              <option value="Hyderabad">Hyderabad</option>
-                              <option value="Warangal">Warangal</option>
-                              <option value="Vijayawada">Vijayawada</option>
-                            </Input>
-                            <FormText className="help-block">Please select your location</FormText>
-                            <div
-                              style={{
-                                color: "#f86c6b",
-                                marginTop: ".25rem",
-                                fontSize: "80%",
-                              }}
-                            >
-                              {errors.Location}
-                            </div>
-                          </FormGroup>
-                        </Col> */}
+                        </Col>                 
                         <Col md={4}>
                           <FormGroup>
                             <Label for="phone">Phone Number *</Label>
@@ -354,12 +311,7 @@ export default class EditStorerooms extends Component {
                               id="phone"
                               valid={!errors.phone}
                               invalid={touched.phone && !!errors.phone}
-                              required
-                              // onChange={(e) => {this.setState(
-                              //   {
-                              //     Input : {...this.state.Input , phone : e.target.value}
-                              //   })                         
-                              //   }}
+                              required                             
                               onChange = {handleChange}
                               onBlur={handleBlur}
                               value={values.phone}
@@ -377,14 +329,13 @@ export default class EditStorerooms extends Component {
                               id="email"
                               valid={!errors.email}
                               invalid={touched.email && !!errors.email}
-                              required
-                              // onChange={(e) => {this.setState(
-                              //   {
-                              //     Input : {...this.state.Input , email : e.target.value}
-                              //   })                         
-                              //   }}
+                              required                              
                               onChange = {handleChange}
-                              onBlur={handleBlur}
+                              onBlur={(e) => {this.setState(
+                                   {
+                                    Input : {...this.state.Input , email : e.target.value}
+                                  })                         
+                                  }}
                               value={values.email}
                             />
                             <FormText className="help-block">Please enter your email</FormText>
@@ -400,14 +351,13 @@ export default class EditStorerooms extends Component {
                               id="password"
                               valid={!errors.password}
                               invalid={touched.password && !!errors.password}
-                              required
-                              // onChange={(e) => {this.setState(
-                              //   {
-                              //     Input : {...this.state.Input , password : e.target.value}
-                              //   })                         
-                              //   }}
+                              required                              
                               onChange = {handleChange}
-                              onBlur={handleBlur}
+                              onBlur={(e) => {this.setState(
+                                   {
+                                     Input : {...this.state.Input , password : e.target.value}
+                                   })                         
+                                   }}
                               value={values.password}
                             />
                             <FormText className="help-block">Please enter your password</FormText>
@@ -416,24 +366,24 @@ export default class EditStorerooms extends Component {
                         </Col>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="Address">Address *</Label>
+                            <Label for="address">Address *</Label>
                             <Input
                               type="text"
-                              name="Address"
-                              id="Address"
-                              valid={!errors.Address}
-                              invalid={touched.Address && !!errors.Address}
+                              name="address"
+                              id="address"
+                              valid={!errors.address}
+                              invalid={touched.address && !!errors.address}
                               required
-                              onChange={(e) => {this.setState(
+                              onChange={handleChange}
+                              onBlur={(e) => {this.setState(
                                 {
                                   Input : {...this.state.Input , address : e.target.value}
                                 })                         
                                 }}
-                              onBlur={handleBlur}
                               value={values.address}
                             />
                             <FormText className="help-block">Please enter your address</FormText>
-                            <FormFeedback>{errors.Address}</FormFeedback>
+                            <FormFeedback>{errors.address}</FormFeedback>
                           </FormGroup>
                         </Col>
                       </Row>
