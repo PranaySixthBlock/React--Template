@@ -23,8 +23,9 @@ import "react-select/dist/react-select.min.css";
 import _ from "lodash";
 import moment from "moment";
 import * as Yup from "yup";
-import axios from 'axios'
+import axios from '../../containers/Axios/Config';
 import { AppSwitch } from '@coreui/react'
+import DatePicker from 'react-date-picker';
 
 // const validationSchema = Yup.object({
 //   Name : Yup.string().required('Required'),
@@ -53,77 +54,262 @@ export default class EditStorerooms extends Component {
     id: undefined,
     companyId: localStorage.getItem("companyId"),
     Input : {
-      tender : 'Teja',
+      tender_name : '',
+      tender_category : '',
       department : '',
       country : '' , 
       state : '' ,
       city : '' ,
-      departmentContact1 : 'dc1' ,
-      departmentContact2 : 'dc2' ,
-      tenderDocuments : '' ,
-      tenderOwner : 'to' ,
-      emdAmount : 'eA' ,
-      emdPaid : 'eP' ,
-      refundDate : 'rd' ,
-      lastDate : 'ld' ,
-      consortium : '' ,
-      statusDropdown : '' ,
-      primaryContact : 'pc' ,
-      secondaryContact : 'sc' ,
-      thirdContact : 'tc' ,
+      department_contact_person1 : '' ,
+      department_contact_person2 : '' ,
+      // tenderDocuments : '' ,
+      tender_owner : '' ,
+      emd_amount : '' ,
+      emd_paid_by_company : '' ,
+      // date_of_refund : '' ,
+      // last_date_to_apply : '' ,
+      consortium_allowed : '' ,
+      tender_status : '' ,
+      primary_contact : '' ,
+      secondary_contact : '' ,
+      third_contact : '' ,
       partners : [
-        {Name : 'Pranay' , contactPerson : 'block' , company : '' , role : ''},
+        {name : '' , contact_person : '' , company : '' , role : ''},
       ]
     },
-    options : [
-        {
-            label : 'Select',
-            value : ''
-        },
-        {
-            label : 'Yes',
-            value : 'yes'
-        },
-        {
-            label : 'No',
-            value : 'no'
-        },
-    ],
-    consortium : true ,
-    count : 0,   
+    date_of_refund : '' ,
+    last_date_to_apply : '' ,
+    tenderOptions : [ ],
+    departmentOptions : [ ],
+    countryOptions : [ ],
+    ownerOptions : [ ],
+    companyOptions : [ ],  
+    stateOptions : [ ],  
+    cityOptions : [ ],
+    roleOptions : [ ],  
+    tender_category : {},
+    country : {},
+    state : {},
+    city : {},
+    department : {},
+    emd_paid_by_company : {},
+    tender_owner : {},
+    tender_status : {},
+    company : {},
+    role : {},
   };
 
   componentDidMount () {
-    // let token=localStorage.getItem("Rjstoken")
-    //     let config = {
-    //       headers: {
-    //         'Authorization': token
-    //       }
-    //     }
-    // let userId = localStorage.getItem('userId');
-    // let companyId = localStorage.getItem('companyId');
-    // axios.get(process.env.REACT_APP_BACKEND_API_URL+ '/company/asset/dropdown/values/' + companyId)
-    // .then(response => {
-    //   console.log(response.data.data.roles)
-    //   let copy = []
-    //   copy.push({
-    //     label : 'Select',
-    //     value : ''
-    //   })
-    //   response.data.data.roles.forEach((e,index) => {
-    //     copy.push ({
-    //       label : e.roleName,
-    //       value : e._id
-    //     })
-    //   })
-    //   this.setState({
-    //     options : copy
-    //   })    
-    // })    
+   if(this.props.match.params.id != 'new'){
+    axios.get( '/get/company/tender/' + this.props.match.params.id )
+    .then(response =>{
+      console.log(response.data.data.data[0])
+      this.setState({
+        Input: response.data.data.data[0] , 
+        tender_category : {
+          label : response.data.data.data[0].tender_category.name,
+          value : response.data.data.data[0].tender_category._id
+        },
+        country : {
+          label : response.data.data.data[0].country.name,
+          value : response.data.data.data[0].country._id
+        },
+        state : {
+          label : response.data.data.data[0].state.name,
+          value : response.data.data.data[0].state._id
+        },
+        city : {
+          label : response.data.data.data[0].city.name,
+          value : response.data.data.data[0].city._id
+        },
+        department : {
+          label : response.data.data.data[0].department.name,
+          value : response.data.data.data[0].department._id
+        },
+        emd_paid_by_company : {
+          label : response.data.data.data[0].emd_paid_by_company.companyName,
+          value : response.data.data.data[0].emd_paid_by_company._id
+        },
+        tender_owner : {
+          label : response.data.data.data[0].tender_owner.fullName,
+          value : response.data.data.data[0].tender_owner._id
+        },
+        tender_status : {
+          value : response.data.data.data[0].tender_status
+        },
+        company : {
+          value : response.data.data.data[0].partners[0].company
+        },
+        role : {
+          value : response.data.data.data[0].partners[0].role
+        },
+      })
+    })}
+    // console.log(this.state.tender_category)
+
+    let token=localStorage.getItem("Rjstoken")
+        let config = {
+          headers: {
+            'Authorization': token
+          }
+        }
+    let companyId = localStorage.getItem('companyId');
+    axios.get(process.env.REACT_APP_BACKEND_API_URL+ '/get/company/tender/dropdown/values/' + companyId , config )
+    .then(response => {
+      console.log(response.data.data)
+      let copy1 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+      let copy2 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+      let copy3 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+      let copy4 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+      let copy5 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+      let copy6 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+      let copy7 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+      let copy8 = [{
+        label : 'Select' ,
+        value : ''
+      }]
+
+      response.data.data.tenderCategory.forEach((e , index) => {
+        copy1.push({
+          label : e.name ,
+          value : e._id
+        })   })
+        this.setState({
+          tenderOptions : copy1,
+        })
+        // console.log(this.state.tenderOptions)
+    
+      response.data.data.department.forEach((e , index) => {
+        copy2.push({
+          label : e.name ,
+          value : e._id
+        }) })
+        this.setState({
+          departmentOptions : copy2,       
+      })
+       // console.log(this.state.departmentOptions)
+      response.data.data.country.forEach((e , index) => {
+        copy3.push({
+          label : e.name ,
+          value : e._id
+        })   })
+        this.setState({
+          countryOptions : copy3, 
+        })
+        // console.log(this.state.countryOptions)
+    
+      response.data.data.companycontacts.forEach((e , index) => {
+        copy4.push({
+          label : e.fullName ,
+          value : e._id
+        })  })
+        this.setState({
+          ownerOptions : copy4,
+        })
+        // console.log(this.state.ownerOptions)
+     
+      response.data.data.companies.forEach((e , index) => {
+        copy5.push({
+          label : e.companyName ,
+          value : e._id
+        })   })
+        this.setState({
+          companyOptions : copy5,
+        })
+        // console.log(this.state.companyOptions) 
+        
+        response.data.data.state.forEach((e , index) => {
+          copy6.push({
+            label : e.name ,
+            value : e._id
+          })   })
+          this.setState({
+            stateOptions : copy6,
+          })
+
+          response.data.data.city.forEach((e , index) => {
+            copy7.push({
+              label : e.name ,
+              value : e._id
+            })   })
+            this.setState({
+              cityOptions : copy7,
+            })
+
+            response.data.data.roles.forEach((e , index) => {
+              copy8.push({
+                label : e.roleName ,
+                value : e._id
+              })   })
+              this.setState({
+                roleOptions : copy8,
+              })
+     })    
   }
 
   onSubmit = () => {
-    alert(`${JSON.stringify(this.state.Input)}`)
+    // console.log(this.state.Input)
+    let id = this.props.match.params.id;
+    let token=localStorage.getItem("Rjstoken")
+    let config = {
+    headers: {
+      'Authorization': token
+    }
+    }
+        if(id != 'new'){
+            axios.put(process.env.REACT_APP_BACKEND_API_URL + '/update/company/tender/' + id , this.state.Input , config)
+            .then (response => {
+                // console.log(response)
+                if(response.status === 200) {
+                  toast.success( "Tender has been updated successfully")
+                  setTimeout(
+                    function(){
+                      this.props.history.push(`/tenderDisplay`);
+                    }.bind(this),
+                   3000);            
+                }
+                else {console.log(response.message)}
+            })
+        }
+        else{
+            let companyId = localStorage.getItem("companyId");
+        axios.post(process.env.REACT_APP_BACKEND_API_URL + '/create/new/tender/' + companyId , this.state.Input , config)
+        .then (response => {
+            console.log(response);
+            if(response.status === 200) {
+              toast.success("Tender has been created successfully")
+              setTimeout(
+                function(){
+                  this.props.history.push(`/tenderDisplay`);
+                }.bind(this),
+               3000);            
+            }
+            else {console.log(response.message)}
+            // this.props.history.push(`/${this.state.type}`);
+        })
+        .catch(err => console.error(err))
+        }        
   }
   
   render() {
@@ -168,38 +354,65 @@ export default class EditStorerooms extends Component {
                     setTouched,
                   }) => (
                     <Form onSubmit={handleSubmit} noValidate name="simpleForm">
-                      <Row form>
+                      <Card>
+                        <CardHeader>
+                          <strong>Tender Details</strong>
+                        </CardHeader>
+                        <CardBody>
+                      <Row Form>
                       <Col md={4}>
                           <FormGroup>
-                            <Label for="tender">tender *</Label>
+                            <Label for="tender_name">Tender name </Label>
+                            <Input
+                              type="text"
+                              name="tender_name"
+                              id="tender_name"
+                              valid={!errors.tender_name}
+                              invalid={touched.tender_name && !!errors.tender_name}
+                              required                             
+                              onChange = {handleChange}
+                              onBlur={(e) => {this.setState(
+                                   {
+                                    Input : {...this.state.Input , tender_name : e.target.value}
+                                  })                         
+                                  }}
+                              value={values.tender_name}
+                            />
+                            <FormText className="help-block">Please enter your tender name number</FormText>
+                            <FormFeedback>{errors.tender_name}</FormFeedback>
+                          </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                          <FormGroup>
+                            <Label for="tender_category">Tender category</Label>
                             <Input
                               type='select'
-                              name="tender"
-                              id="tender"
-                              multi
-                            //   value={this.state.role.value}
-                              valid={!errors.tender}
+                              name="tender_category"
+                              id="tender_category"
+                              value={this.state.tender_category.value}
+                              // defaultValue={values.tender_category}
+                              valid={!errors.tender_category}
                               inputProps={{
                                 autoComplete: "off",
                                 autoCorrect: "off",
                                 spellCheck: "off",
                               }}
-                              invalid={touched.tender && !!errors.tender}
+                              invalid={touched.tender_category && !!errors.tender_category}
                               options={this.state.locationData }
                               onChange={(e) => {this.setState(
                                 {
-                                  Input : {...this.state.Input , tender : e.target.value}
+                                  Input : {...this.state.Input , tender_category : e.target.value}
                                 })                            
                                 
                               }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {this.state.tenderOptions.map((option) => (
                               <option value={option.value}>{option.label}</option>
                                 ))}
                             </Input>
                             
-                            <FormText className="help-block">Please select your tender</FormText>
+                            <FormText className="help-block">Please select your tender category</FormText>
                             <div
                               style={{
                                 color: "#f86c6b",
@@ -207,19 +420,18 @@ export default class EditStorerooms extends Component {
                                 fontSize: "80%",
                               }}
                             >
-                              {errors.tender}
+                              {errors.tender_category}
                             </div>
                           </FormGroup>
-                        </Col> 
+                        </Col>    
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="department">department *</Label>
+                            <Label for="department">Department </Label>
                             <Input
                               type='select'
                               name="department"
                               id="department"
-                              multi
-                            //   value={this.state.department.value}
+                              value={this.state.department.value}
                               // defaultValue={values.department}
                               valid={!errors.department}
                               inputProps={{
@@ -237,7 +449,7 @@ export default class EditStorerooms extends Component {
                               }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {this.state.departmentOptions.map((option) => (
                               <option value={option.value}>{option.label}</option>
                                 ))}
                             </Input>
@@ -253,16 +465,17 @@ export default class EditStorerooms extends Component {
                               {errors.department}
                             </div>
                           </FormGroup>
-                        </Col> 
+                        </Col>  
+                        </Row>  
+                        <Row Form>                              
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="country">country *</Label>
+                            <Label for="country">Country </Label>
                             <Input
                               type='select'
                               name="country"
                               id="country"
-                              multi
-                            //   value={this.state.country.value}
+                              value={this.state.country.value}
                               // defaultValue={values.country}
                               valid={!errors.country}
                               inputProps={{
@@ -276,11 +489,29 @@ export default class EditStorerooms extends Component {
                                 {
                                   Input : {...this.state.Input , country : e.target.value}
                                 })                            
-                                
+                                axios.get(process.env.REACT_APP_BACKEND_API_URL + '/get/state/dropdown/values/' + e.target.value ).
+                                then(response => {
+                                  console.log(response.data.data)
+                                  let copy = [
+                                    {
+                                      label : 'Select' ,
+                                      value : '',
+                                    }
+                                  ]
+                                  response.data.data.forEach((e,index) =>{
+                                    copy.push({
+                                      label : e.name ,
+                                      value : e._id
+                                    }) 
+                                  })                                   
+                                  this.setState({
+                                    stateOptions : copy,
+                                  })
+                                })
                               }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {this.state.countryOptions.map((option) => (
                               <option value={option.value}>{option.label}</option>
                                 ))}
                             </Input>
@@ -296,18 +527,15 @@ export default class EditStorerooms extends Component {
                               {errors.country}
                             </div>
                           </FormGroup>
-                        </Col>   
-                        </Row>
-                        <Row Form>
+                        </Col>    
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="state">state *</Label>
+                            <Label for="state">State </Label>
                             <Input
                               type='select'
                               name="state"
                               id="state"
-                              multi
-                            //   value={this.state.state.value}
+                              value={this.state.state.value}
                               // defaultValue={values.state}
                               valid={!errors.state}
                               inputProps={{
@@ -321,11 +549,29 @@ export default class EditStorerooms extends Component {
                                 {
                                   Input : {...this.state.Input , state : e.target.value}
                                 })                            
-                                
+                                axios.get(process.env.REACT_APP_BACKEND_API_URL + '/get/city/dropdown/values/' + e.target.value ).
+                                then(response => {
+                                  console.log(response.data.data)
+                                  let copy = [
+                                    {
+                                      label : 'Select' ,
+                                      value : '',
+                                    }
+                                  ]
+                                  response.data.data.forEach((e,index) =>{
+                                    copy.push({
+                                      label : e.name ,
+                                      value : e._id
+                                    }) 
+                                  })                                   
+                                  this.setState({
+                                    cityOptions : copy,
+                                  })
+                                })
                               }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {this.state.stateOptions.map((option) => (
                               <option value={option.value}>{option.label}</option>
                                 ))}
                             </Input>
@@ -344,12 +590,12 @@ export default class EditStorerooms extends Component {
                         </Col>  
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="city">city *</Label>
+                            <Label for="city">City </Label>
                             <Input
                               type='select'
                               name="city"
                               id="city"
-                            //   value={this.state.city.value}
+                              value={this.state.city.value}
                               // defaultValue={values.city}
                               valid={!errors.city}
                               inputProps={{
@@ -367,7 +613,7 @@ export default class EditStorerooms extends Component {
                               }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {this.state.cityOptions.map((option) => (
                               <option value={option.value}>{option.label}</option>
                                 ))}
                             </Input>
@@ -383,174 +629,230 @@ export default class EditStorerooms extends Component {
                               {errors.city}
                             </div>
                           </FormGroup>
-                        </Col>                                  
+                        </Col> 
+                        </Row>
+                        </CardBody>
+                        </Card> 
+                        <Card>
+                          <CardHeader>
+                            <strong>
+                              Department Contacts
+                            </strong>
+                          </CardHeader>
+                          <CardBody>                        
+                        <Row Form>                                
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="departmentContact1">departmentContact1 Number *</Label>
+                            <Label for="department_contact_person1">Department contact person1</Label>
                             <Input
                               type="text"
-                              name="departmentContact1"
-                              id="departmentContact1"
-                              valid={!errors.departmentContact1}
-                              invalid={touched.departmentContact1 && !!errors.departmentContact1}
+                              name="department_contact_person1"
+                              id="department_contact_person1"
+                              valid={!errors.department_contact_person1}
+                              invalid={touched.department_contact_person1 && !!errors.department_contact_person1}
                               required                             
                               onChange = {handleChange}
                               onBlur={(e) => {this.setState(
                                    {
-                                    Input : {...this.state.Input , departmentContact1 : e.target.value}
+                                    Input : {...this.state.Input , department_contact_person1 : e.target.value}
                                   })                         
                                   }}
-                              value={values.departmentContact1}
+                              value={values.department_contact_person1}
                             />
-                            <FormText className="help-block">Please enter your departmentContact1 number</FormText>
-                            <FormFeedback>{errors.departmentContact1}</FormFeedback>
+                            <FormText className="help-block">Please enter your department contact person1</FormText>
+                            <FormFeedback>{errors.department_contact_person1}</FormFeedback>
                           </FormGroup>
                         </Col>
-                        </Row>
-                        <Row Form>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="departmentContact2">departmentContact2 *</Label>
+                            <Label for="department_contact_person2">Department contact person2 </Label>
                             <Input
                               type="text"
-                              name="departmentContact2"
-                              id="departmentContact2"
-                              valid={!errors.departmentContact2}
-                              invalid={touched.departmentContact2 && !!errors.departmentContact2}
+                              name="department_contact_person2"
+                              id="department_contact_person2"
+                              valid={!errors.department_contact_person2}
+                              invalid={touched.department_contact_person2 && !!errors.department_contact_person2}
                               required                              
                               onChange = {handleChange}
                               onBlur={(e) => {this.setState(
                                    {
-                                    Input : {...this.state.Input , departmentContact2 : e.target.value}
+                                    Input : {...this.state.Input , department_contact_person2 : e.target.value}
                                   })                         
                                   }}
-                              value={values.departmentContact2}
+                              value={values.department_contact_person2}
                             />
-                            <FormText className="help-block">Please enter your departmentContact2</FormText>
-                            <FormFeedback>{errors.departmentContact2}</FormFeedback>
+                            <FormText className="help-block">Please enter your department contact person2</FormText>
+                            <FormFeedback>{errors.department_contact_person2}</FormFeedback>
                           </FormGroup>
-                        </Col>                        
-                        <Col md={4}>
-                          <FormGroup>
-                            <Label for="tenderOwner">tenderOwner *</Label>
-                            <Input
-                              type="text"
-                              name="tenderOwner"
-                              id="tenderOwner"
-                              valid={!errors.tenderOwner}
-                              invalid={touched.tenderOwner && !!errors.tenderOwner}
-                              required
-                              onChange={handleChange}
-                              onBlur={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , tenderOwner : e.target.value}
-                                })                         
-                                }}
-                              value={values.tenderOwner}
-                            />
-                            <FormText className="help-block">Please enter your tenderOwner</FormText>
-                            <FormFeedback>{errors.tenderOwner}</FormFeedback>
-                          </FormGroup>
-                        </Col>
-                        <Col md={4}>
-                          <FormGroup>
-                            <Label for="emdAmount">emdAmount *</Label>
-                            <Input
-                              type="text"
-                              name="emdAmount"
-                              id="emdAmount"
-                              valid={!errors.emdAmount}
-                              invalid={touched.emdAmount && !!errors.emdAmount}
-                              required
-                              onChange={handleChange}
-                              onBlur={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , emdAmount : e.target.value}
-                                })                         
-                                }}
-                              value={values.emdAmount}
-                            />
-                            <FormText className="help-block">Please enter your emdAmount</FormText>
-                            <FormFeedback>{errors.emdAmount}</FormFeedback>
-                          </FormGroup>
-                        </Col>
+                        </Col> 
                         </Row>
+                        </CardBody>
+                        </Card> 
+                        <Card>
+                        <CardHeader>
+                            <strong>
+                              Other Tender Details
+                            </strong>
+                          </CardHeader>
+                          <CardBody>                          
+                        <Row>
+                        <Col md={4}>
+                          <FormGroup>
+                            <Label for="tender_owner">Tender owner </Label>
+                            <Input
+                              type='select'
+                              name="tender_owner"
+                              id="tender_owner"
+                              value={this.state.tender_owner.value}
+                              // defaultValue={values.tender_owner}
+                              valid={!errors.tender_owner}
+                              inputProps={{
+                                autoComplete: "off",
+                                autoCorrect: "off",
+                                spellCheck: "off",
+                              }}
+                              invalid={touched.tender_owner && !!errors.tender_owner}
+                              options={this.state.locationData }
+                              onChange={(e) => {this.setState(
+                                {
+                                  Input : {...this.state.Input , tender_owner : e.target.value}
+                                })                            
+                                
+                              }}
+                              onBlur={handleBlur}
+                            >
+                              {this.state.ownerOptions.map((option) => (
+                              <option value={option.value}>{option.label}</option>
+                                ))}
+                            </Input>
+                            
+                            <FormText className="help-block">Please select your tender owner</FormText>
+                            <div
+                              style={{
+                                color: "#f86c6b",
+                                marginTop: ".25rem",
+                                fontSize: "80%",
+                              }}
+                            >
+                              {errors.tender_owner}
+                            </div>
+                          </FormGroup>
+                        </Col> 
+                        <Col md={4}>
+                          <FormGroup>
+                            <Label for="emd_amount">Emd amount </Label>
+                            <Input
+                              type="text"
+                              name="emd_amount"
+                              id="emd_amount"
+                              valid={!errors.emd_amount}
+                              invalid={touched.emd_amount && !!errors.emd_amount}
+                              required
+                              onChange={handleChange}
+                              onBlur={(e) => {this.setState(
+                                {
+                                  Input : {...this.state.Input , emd_amount : e.target.value}
+                                })                         
+                                }}
+                              value={values.emd_amount}
+                            />
+                            <FormText className="help-block">Please enter your emd amount</FormText>
+                            <FormFeedback>{errors.emd_amount}</FormFeedback>
+                          </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                          <FormGroup>
+                            <Label for="emd_paid_by_company">Emd paid by company </Label>
+                            <Input
+                              type='select'
+                              name="emd_paid_by_company"
+                              id="emd_paid_by_company"
+                              value={this.state.emd_paid_by_company.value}
+                              // defaultValue={values.emd_paid_by_company}
+                              valid={!errors.emd_paid_by_company}
+                              inputProps={{
+                                autoComplete: "off",
+                                autoCorrect: "off",
+                                spellCheck: "off",
+                              }}
+                              invalid={touched.emd_paid_by_company && !!errors.emd_paid_by_company}
+                              options={this.state.locationData }
+                              onChange={(e) => {this.setState(
+                                {
+                                  Input : {...this.state.Input , emd_paid_by_company : e.target.value}
+                                })                           
+                                
+                              }}
+                              onBlur={handleBlur}
+                            >
+                              {this.state.companyOptions.map((option) => (
+                              <option value={option.value}>{option.label}</option>
+                                ))}
+                            </Input>
+                            
+                            <FormText className="help-block">Please select your emd paid by company</FormText>
+                            <div
+                              style={{
+                                color: "#f86c6b",
+                                marginTop: ".25rem",
+                                fontSize: "80%",
+                              }}
+                            >
+                              {errors.emd_paid_by_company}
+                            </div>
+                          </FormGroup>
+                        </Col> 
+                        </Row> 
                         <Row Form>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="emdPaid">emdPaid *</Label>
-                            <Input
-                              type="text"
-                              name="emdPaid"
-                              id="emdPaid"
-                              valid={!errors.emdPaid}
-                              invalid={touched.emdPaid && !!errors.emdPaid}
-                              required
-                              onChange={handleChange}
-                              onBlur={(e) => {this.setState(
+                            <Label for="date_of_refund">Date of refund </Label>
+                            <DatePicker
+                              format={"dd-MMM-yyyy"}
+                              onChange={(e) => {this.setState(
                                 {
-                                  Input : {...this.state.Input , emdPaid : e.target.value}
-                                })                         
+                                  // Input : {...this.state.Input , }
+                                  date_of_refund : e
+                                } , ()=> {console.log(this.state.Input.date_of_refund.toString())})
                                 }}
-                              value={values.emdPaid}
+                              value={this.state.date_of_refund}
                             />
-                            <FormText className="help-block">Please enter your emdPaid</FormText>
-                            <FormFeedback>{errors.emdPaid}</FormFeedback>
+                            <FormText className="help-block">Please enter your date of refund</FormText>
+                            <FormFeedback>{errors.date_of_refund}</FormFeedback>
                           </FormGroup>
                         </Col>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="refundDate">refundDate *</Label>
-                            <Input
-                              type="text"
-                              name="refundDate"
-                              id="refundDate"
-                              valid={!errors.refundDate}
-                              invalid={touched.refundDate && !!errors.refundDate}
-                              required
-                              onChange={handleChange}
-                              onBlur={(e) => {this.setState(
+                            <Label for="last_date_to_apply">Last date to apply </Label>
+                            <DatePicker
+                              onChange={(e) => {this.setState(
                                 {
-                                  Input : {...this.state.Input , refundDate : e.target.value}
-                                })                         
+                                  // Input : {...this.state.Input , }
+                                  last_date_to_apply : e
+                                } , ()=> {console.log(this.state.Input.last_date_to_apply)})
                                 }}
-                              value={values.refundDate}
+                              value={this.state.last_date_to_apply}
                             />
-                            <FormText className="help-block">Please enter your refundDate</FormText>
-                            <FormFeedback>{errors.refundDate}</FormFeedback>
-                          </FormGroup>
-                        </Col>
-                        <Col md={4}>
-                          <FormGroup>
-                            <Label for="lastDate">lastDate *</Label>
-                            <Input
-                              type="text"
-                              name="lastDate"
-                              id="lastDate"
-                              valid={!errors.lastDate}
-                              invalid={touched.lastDate && !!errors.lastDate}
-                              required
-                              onChange={handleChange}
-                              onBlur={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , lastDate : e.target.value}
-                                })                         
-                                }}
-                              value={values.lastDate}
-                            />
-                            <FormText className="help-block">Please enter your lastDate</FormText>
-                            <FormFeedback>{errors.lastDate}</FormFeedback>
+                            <FormText className="help-block">Please enter your last_date_to_apply</FormText>
+                            <FormFeedback>{errors.last_date_to_apply}</FormFeedback>
                           </FormGroup>
                         </Col>     
                         </Row>
+                        </CardBody>
+                        </Card> 
+                        <Card>
+                          <CardHeader>
+                            <strong>Status</strong>
+                          </CardHeader>
+                          <CardBody>
                         <Row Form>
                         <Col md={4}>
                           <FormGroup>
-                          <Label for="consortium">consortium *</Label>
+                          <Label for="consortium_allowed">Consortium allowed </Label>
                           <div style={{marginTop:'1px' , marginLeft:'10px'}}></div>
                           <AppSwitch
-                            name="consortium"
-                            id="consortium"
+                            name="consortium_allowed"
+                            id="consortium_allowed"
                             className={"mx-1"}
                             variant={"3d"}
                             color={"primary"}
@@ -558,10 +860,12 @@ export default class EditStorerooms extends Component {
                             label
                             dataOn={"\u2713"}
                             dataOff={"\u2715"}
-                            onChange={(e) => this.setState({consortium : e.target.checked})}
-                            checked={this.state.consortium}
+                            onChange={(e) => this.setState({
+                              Input : { ...this.state.Input , consortium_allowed : e.target.checked}
+                            })}
+                            checked={this.state.Input.consortium_allowed}
                         />                            
-                            <FormText className="help-block">Please select your consortium</FormText>
+                            <FormText className="help-block">Please select your consortium allowed</FormText>
                             <div
                               style={{
                                 color: "#f86c6b",
@@ -569,42 +873,45 @@ export default class EditStorerooms extends Component {
                                 fontSize: "80%",
                               }}
                             >
-                              {errors.consortium}
+                              {errors.consortium_allowed}
                             </div>
                           </FormGroup>
                         </Col>                     
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="statusDropdown">Status *</Label>
+                            <Label for="tender_status">Status </Label>
                             <Input
                               type='select'
-                              name="statusDropdown"
-                              id="statusDropdown"
-                              multi
-                            //   value={this.state.statusDropdown.value}
-                              // defaultValue={values.statusDropdown}
-                              valid={!errors.statusDropdown}
+                              name="tender_status"
+                              id="tender_status"
+                              value={this.state.tender_status.value}
+                              // defaultValue={values.tender_status}
+                              valid={!errors.tender_status}
                               inputProps={{
                                 autoComplete: "off",
                                 autoCorrect: "off",
                                 spellCheck: "off",
                               }}
-                              invalid={touched.statusDropdown && !!errors.statusDropdown}
+                              invalid={touched.tender_status && !!errors.tender_status}
                               options={this.state.locationData }
                               onChange={(e) => {this.setState(
                                 {
-                                  Input : {...this.state.Input , statusDropdown : e.target.value}
+                                  Input : {...this.state.Input , tender_status : e.target.value}
                                 })                            
                                 
                               }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {/* {this.state.options.map((option) => (
                               <option value={option.value}>{option.label}</option>
-                                ))}
+                                ))} */}
+                                <option value=''>Select</option>
+                                <option value='pending'>Pending</option>
+                                <option value='not_started'>Not_started</option>
+                                <option value='completed'>Completed</option>
                             </Input>
                             
-                            <FormText className="help-block">Please select your statusDropdown</FormText>
+                            <FormText className="help-block">Please select your tender status</FormText>
                             <div
                               style={{
                                 color: "#f86c6b",
@@ -612,92 +919,80 @@ export default class EditStorerooms extends Component {
                                 fontSize: "80%",
                               }}
                             >
-                              {errors.statusDropdown}
+                              {errors.tender_status}
                             </div>
                           </FormGroup>
                         </Col>  
-                        <Col md={4}>
-                          <FormGroup>
-                            <Label for="primaryContact">primaryContact Number *</Label>
-                            <Input
-                              type="text"
-                              name="primaryContact"
-                              id="primaryContact"
-                              valid={!errors.primaryContact}
-                              invalid={touched.primaryContact && !!errors.primaryContact}
-                              required                             
-                              onChange = {handleChange}
-                              onBlur={(e) => {this.setState(
-                                   {
-                                    Input : {...this.state.Input , primaryContact : e.target.value}
-                                  })                         
-                                  }}
-                              value={values.primaryContact}
-                            />
-                            <FormText className="help-block">Please enter your primaryContact number</FormText>
-                            <FormFeedback>{errors.primaryContact}</FormFeedback>
-                          </FormGroup>
-                        </Col>
                         </Row>
-                        {this.state.consortium && this.state.Input.partners.map((e , index) => (
+                        </CardBody>
+                        </Card>
+                        
+                        
+                        {this.state.Input.consortium_allowed && this.state.Input.partners.map((e , index) => (
+                          <Card>
+                          <CardHeader>
+                            <strong>Consortium</strong>
+                          </CardHeader>
+                          <CardBody>
                           <Row key={index}>
+                            {/* {console.log(index)} */}
                           <Col md={3}>
                           <FormGroup>
-                            <Label for='Name'> Name  *</Label>
+                            <Label for='name'> Name </Label>
                             <Input
                               type="text"
-                              name="Name"
-                              id="Name"
-                              valid={!errors.Name}
-                              invalid={touched.Name && !!errors.Name}
+                              name="name"
+                              id="name"
+                              valid={!errors.name}
+                              invalid={touched.name && !!errors.name}
                               required                             
                               onChange = {(e)=> {
                                   let copy = this.state.Input.partners
-                                  copy[index].Name = e.target.value
+                                  copy[index].name = e.target.value
                                   this.setState({
                                     Input : { ...this.state.Input , partners : copy }
                                   })
                                   console.log(this.state.Input.partners)
                               }}
                               onBlur={handleBlur}
-                              value={values.partners[index].Name }
+                              value={values.partners[index].name }
                             />
                             <FormText className="help-block">Please enter your Name </FormText>
-                            <FormFeedback>{errors.Name}</FormFeedback>
+                            <FormFeedback>{errors.name}</FormFeedback>
                           </FormGroup>
                           </Col>
                           <Col md={3}>
                           <FormGroup>
-                            <Label for="contactPerson">contactPerson  *</Label>
+                            <Label for="contact_person">Contact person  </Label>
                             <Input
                               type="text"
-                              name="contactPerson"
-                              id="contactPerson"
-                              valid={!errors.contactPerson}
-                              invalid={touched.contactPerson && !!errors.contactPerson}
+                              name="contact_person"
+                              id="contact_person"
+                              valid={!errors.contact_person}
+                              invalid={touched.contact_person && !!errors.contact_person}
                               required                             
                               onChange = {(e)=> {
                                 let copy = this.state.Input.partners
-                                copy[index].contactPerson = e.target.value
+                                copy[index].contact_person = e.target.value
                                 this.setState({
                                   Input : { ...this.state.Input , partners : copy }
                                 })
                             }}
                               onBlur={handleBlur}
-                              value={this.state.Input.partners[index].contactPerson}
+                              value={this.state.Input.partners[index].contact_person}
                             />
-                            <FormText className="help-block">Please enter your thirdContact </FormText>
-                            <FormFeedback>{errors.thirdContact}</FormFeedback>
+                            <FormText className="help-block">Please enter your contact person </FormText>
+                            <FormFeedback>{errors.contact_person}</FormFeedback>
                           </FormGroup>
                           </Col >
                           <Col md={3}>
                           <FormGroup>
-                            <Label for="company">company *</Label>
+                            <Label for="company">Company </Label>
                             <Input
                               type='select'
                               name="company"
                               id="company"
-                            //   value={this.state.company.value}
+                              value={this.state.company.value}
                               // defaultValue={values.company}
                               valid={!errors.company}
                               inputProps={{
@@ -713,11 +1008,30 @@ export default class EditStorerooms extends Component {
                                 this.setState(
                                 {
                                   Input : {...this.state.Input , partners : copy}
-                                })                          
+                                })  
+                                axios.get(process.env.REACT_APP_BACKEND_API_URL + '/get/roles/dropdown/values/' + e.target.value ).
+                                then(response => {
+                                  console.log(response.data.data)
+                                  let copy = [
+                                    {
+                                      label : 'Select' ,
+                                      value : '',
+                                    }
+                                  ]
+                                  response.data.data.forEach((e,index) =>{
+                                    copy.push({
+                                      label : e.roleName ,
+                                      value : e._id
+                                    }) 
+                                  })                                   
+                                  this.setState({
+                                    roleOptions : copy,
+                                  })
+                                })                        
                              }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {this.state.companyOptions.map((option) => (
                               <option value={option.value}>{option.label}</option>
                                 ))}
                             </Input>
@@ -736,12 +1050,12 @@ export default class EditStorerooms extends Component {
                         </Col>   
                         <Col md={3}>
                           <FormGroup>
-                            <Label for="role">role *</Label>
+                            <Label for="role">Role </Label>
                             <Input
                               type='select'
                               name="role"
                               id="role"
-                            //   value={this.state.role.value}
+                              value={this.state.role.value}
                               // defaultValue={values.role}
                               valid={!errors.role}
                               inputProps={{
@@ -762,7 +1076,7 @@ export default class EditStorerooms extends Component {
                               }}
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
+                              {this.state.roleOptions.map((option) => (
                               <option value={option.value}>{option.label}</option>
                                 ))}
                             </Input>
@@ -779,17 +1093,16 @@ export default class EditStorerooms extends Component {
                             </div>
                           </FormGroup>
                         </Col>   
-                      </Row>
-                      ))}
-                      {this.state.consortium && (
-                          <Row  className="justify-content-center text-center" style={{marginBottom:'30px' }}>
+                      </Row>                      
+                     
+                          <Row  className="justify-content-center text-center" >
                           <Col
                               md={2}
                             >
                                 <i className="fa fa-plus" aria-hidden="true" style={{cursor:'pointer'}}
                                 onClick={() => {
                                     let copy = this.state.Input.partners
-                                    copy.push({Name : '' , contactPerson : '' , company : '' , role : ''})
+                                    copy.push({name : '' , contact_person : '' , company : '' , role : ''})
                                     this.setState({
                                         Input : { ...this.state.Input , partners : copy }
                                     })
@@ -810,53 +1123,88 @@ export default class EditStorerooms extends Component {
 
                             </i>
                             </Col>
-                    </Row>
-                      )}
+                    </Row> 
+                    </CardBody>
+                    </Card>                   
+                    ))}                        
+
+                      <Card>
+                        <CardHeader>
+                          <strong>
+                            Other Contacts
+                          </strong>
+                        </CardHeader>
+                        <CardBody>                      
                         <Row Form>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="secondaryContact">secondaryContact Number *</Label>
+                            <Label for="primary_contact">Primary contact Number </Label>
                             <Input
                               type="text"
-                              name="secondaryContact"
-                              id="secondaryContact"
-                              valid={!errors.secondaryContact}
-                              invalid={touched.secondaryContact && !!errors.secondaryContact}
+                              name="primary_contact"
+                              id="primary_contact"
+                              valid={!errors.primary_contact}
+                              invalid={touched.primary_contact && !!errors.primary_contact}
                               required                             
                               onChange = {handleChange}
                               onBlur={(e) => {this.setState(
                                    {
-                                    Input : {...this.state.Input , secondaryContact : e.target.value}
+                                    Input : {...this.state.Input , primary_contact : e.target.value}
                                   })                         
                                   }}
-                              value={values.secondaryContact}
+                              value={values.primary_contact}
                             />
-                            <FormText className="help-block">Please enter your secondaryContact number</FormText>
-                            <FormFeedback>{errors.secondaryContact}</FormFeedback>
+                            <FormText className="help-block">Please enter your primary contact number</FormText>
+                            <FormFeedback>{errors.primary_contact}</FormFeedback>
                           </FormGroup>
                         </Col>
                         <Col md={4}>
                           <FormGroup>
-                            <Label for="thirdContact">thirdContact Number *</Label>
+                            <Label for="secondary_contact">Secondary contact Number </Label>
                             <Input
                               type="text"
-                              name="thirdContact"
-                              id="thirdContact"
-                              valid={!errors.thirdContact}
-                              invalid={touched.thirdContact && !!errors.thirdContact}
+                              name="secondary_contact"
+                              id="secondary_contact"
+                              valid={!errors.secondary_contact}
+                              invalid={touched.secondary_contact && !!errors.secondary_contact}
                               required                             
                               onChange = {handleChange}
                               onBlur={(e) => {this.setState(
                                    {
-                                    Input : {...this.state.Input , thirdContact : e.target.value}
+                                    Input : {...this.state.Input , secondary_contact : e.target.value}
                                   })                         
                                   }}
-                              value={values.thirdContact}
+                              value={values.secondary_contact}
                             />
-                            <FormText className="help-block">Please enter your thirdContact number</FormText>
-                            <FormFeedback>{errors.thirdContact}</FormFeedback>
+                            <FormText className="help-block">Please enter your secondary contact number</FormText>
+                            <FormFeedback>{errors.secondary_contact}</FormFeedback>
                           </FormGroup>
                         </Col>
+                        <Col md={4}>
+                          <FormGroup>
+                            <Label for="third_contact">Third contact Number </Label>
+                            <Input
+                              type="text"
+                              name="third_contact"
+                              id="third_contact"
+                              valid={!errors.third_contact}
+                              invalid={touched.third_contact && !!errors.third_contact}
+                              required                             
+                              onChange = {handleChange}
+                              onBlur={(e) => {this.setState(
+                                   {
+                                    Input : {...this.state.Input , third_contact : e.target.value}
+                                  })                         
+                                  }}
+                              value={values.third_contact}
+                            />
+                            <FormText className="help-block">Please enter your third contact number</FormText>
+                            <FormFeedback>{errors.third_contact}</FormFeedback>
+                          </FormGroup>
+                        </Col>
+                        </Row>
+                        </CardBody>
+                      </Card>
                         {/* <Col md={4}>
                           <FormGroup>
                             <Label for="tenderDocuments">tenderDocuments *</Label>
@@ -881,7 +1229,6 @@ export default class EditStorerooms extends Component {
                           </FormGroup>
                         </Col> */}
                        
-                      </Row>
  {/* //=========================================================================================================================================*/}
 
                       <Row>
@@ -937,69 +1284,3 @@ export default class EditStorerooms extends Component {
     );
   }
 }
-
-{/* <Col md={4}>
-                          <FormGroup>
-                            <Label for="tender">Name *</Label>
-                            <Input
-                              type="text"
-                              name="tender"
-                              id="tender"
-                              valid={!errors.tender}
-                              invalid={touched.tender && !!errors.tender}
-                              required                            
-                              onChange = {handleChange}
-                              onBlur={(e) => {this.setState(
-                                   {
-                                     Input : {...this.state.Input , tender : e.target.value}
-                                   })
-                                   }}
-                              value={values.tender}
-                            />
-                            <FormText className="help-block">Please enter tender name</FormText>
-                            <FormFeedback>{errors.tender}</FormFeedback>
-                          </FormGroup>
-                        </Col>
-                        <Col md={4}>
-                          <FormGroup>
-                            <Label for="Role">Role *</Label>
-                            <Input
-                              type='select'
-                              name="Role"
-                              id="Role"
-                              multi
-                              value={this.state.role.value}
-                              // defaultValue={values.role}
-                              valid={!errors.Role}
-                              inputProps={{
-                                autoComplete: "off",
-                                autoCorrect: "off",
-                                spellCheck: "off",
-                              }}
-                              invalid={touched.Role && !!errors.Role}
-                              options={this.state.locationData }
-                              onChange={(e) => {this.setState(
-                                {
-                                  Input : {...this.state.Input , role : e.target.value}
-                                })                            
-                                
-                              }}
-                              onBlur={handleBlur}
-                            >
-                              {this.state.options.map((option) => (
-                              <option value={option.value}>{option.label}</option>
-                                ))}
-                            </Input>
-                            
-                            <FormText className="help-block">Please select your role</FormText>
-                            <div
-                              style={{
-                                color: "#f86c6b",
-                                marginTop: ".25rem",
-                                fontSize: "80%",
-                              }}
-                            >
-                              {errors.Role}
-                            </div>
-                          </FormGroup>
-                        </Col>       */}

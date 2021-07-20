@@ -5,7 +5,8 @@ export default {
   items: [
       {
       name : 'Dashboard',
-      icon : 'fa fa-dashboard'
+      icon : 'fa fa-dashboard',
+      url : '/dashboard'
       },
     	{
       name: 'User Management',
@@ -28,7 +29,7 @@ export default {
     {
       name : 'Tender',
       icon : 'fa fa-gavel',
-      url : '/tenderCreation'
+      url : '/tenderDisplay'
     },
     {
       name : 'settings',

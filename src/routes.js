@@ -15,6 +15,7 @@ const createTender = React.lazy(()=>import('./views/List/CreateTender'));
 const Department = React.lazy(()=>import('./views/List/Department'));
 const createDepartment = React.lazy(()=>import('./views/List/CreateDepartment'));
 const Tender = React.lazy(()=>import('./views/List/Tender'));
+const TenderDisplay = React.lazy(()=>import('./views/List/TenderDisplay'));
 
 // const Addcase = React.lazy(()=>import('./views/Cases/Addcase.js'));
 const routes = [
@@ -33,7 +34,8 @@ const routes = [
         // { path: '/createTender/:id?/:type?', name: 'createTender', component: createTender  , exact: true } ,   
         { path: '/department', name: 'Department', component: Department  , exact: true } ,   
         // { path: '/createDepartment/:id', name: 'createDepartment', component: createDepartment  , exact: true }   
-        { path: '/tenderCreation', name: 'Tender', component: Tender  , exact: true } ,   
+        { path: '/tenderCreation/:id', name: 'Tender', component: Tender  , exact: true } , 
+        { path: '/tenderDisplay', name: 'TenderDisplay', component: TenderDisplay  , exact: true } ,   
 ];      
 
 export default routes;

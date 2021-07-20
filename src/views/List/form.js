@@ -132,7 +132,7 @@ export default class EditStorerooms extends Component {
         role : {label : response.data.data.data.role.roleName,
           value : response.data.data.data.role._id }
       })
-      // console.log(this.state.Input)
+      console.log(this.state.role)
     })
     }
     
