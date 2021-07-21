@@ -14,6 +14,8 @@ import {
   Row,
   FormText,
 } from "reactstrap";
+import { SingleDatePicker } from "react-dates";
+
 import { Formik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +28,7 @@ import * as Yup from "yup";
 import axios from '../../containers/Axios/Config';
 import { AppSwitch } from '@coreui/react'
 import DatePicker from 'react-date-picker';
+import Popup from './Popup';
 
 // const validationSchema = Yup.object({
 //   Name : Yup.string().required('Required'),
@@ -97,7 +100,52 @@ export default class EditStorerooms extends Component {
     tender_status : {},
     company : {},
     role : {},
+    focused: false,
+    date: moment(),
+    imageToPost : [],
+    isOpen : false,
+    img : 0 ,
   };
+
+   addImageToPost = (e) => {
+     if(this.state.imageToPost.length >= 5){
+        toast.error("Cannot add more than 5 images")
+     }else{
+    const reader = new FileReader();
+    
+    if (e.target.files[0]) {
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    reader.onload = (readerEvent) => {
+      let copy = this.state.imageToPost
+      if(copy.includes( readerEvent.target.result)){
+        toast.error('Image has been added earlier')
+        console.log(this.state.imageToPost.length)
+      }else{
+      copy.push ( readerEvent.target.result)
+        this.setState({
+          imageToPost : copy
+        })
+    }}
+  }
+}
+
+  popup = (index) => {    
+      this.setState({
+        isOpen : true,
+        img : index,
+      }, () => console.log(this.state.img) )    
+  }
+
+  removeImage = (index) => {
+    let copy = this.state.imageToPost
+    copy.splice(index, 1)
+    console.log(copy.length)
+    this.setState({
+      imageToPost : copy
+    } )
+  }
 
   componentDidMount () {
    if(this.props.match.params.id != 'new'){
@@ -315,6 +363,9 @@ export default class EditStorerooms extends Component {
   render() {
     return (
       <div className="animated fadeIn">
+       <Popup open={this.state.isOpen} src ={this.state.imageToPost[this.state.img]} 
+        onClose={() => this.setState({isOpen: false})}>
+      </Popup>
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -807,16 +858,13 @@ export default class EditStorerooms extends Component {
                         <Col md={4}>
                           <FormGroup>
                             <Label for="date_of_refund">Date of refund </Label>
-                            <DatePicker
-                              format={"dd-MMM-yyyy"}
-                              onChange={(e) => {this.setState(
-                                {
-                                  // Input : {...this.state.Input , }
-                                  date_of_refund : e
-                                } , ()=> {console.log(this.state.Input.date_of_refund.toString())})
-                                }}
-                              value={this.state.date_of_refund}
-                            />
+                            {/* <SingleDatePicker
+          numberOfMonths={1}
+          onDateChange={date => this.setState({ date })}
+          onFocusChange={({ focused }) => this.setState({ focused })}
+          focused={this.state.focused}
+          date={this.state.date}
+        /> */}
                             <FormText className="help-block">Please enter your date of refund</FormText>
                             <FormFeedback>{errors.date_of_refund}</FormFeedback>
                           </FormGroup>
@@ -824,15 +872,13 @@ export default class EditStorerooms extends Component {
                         <Col md={4}>
                           <FormGroup>
                             <Label for="last_date_to_apply">Last date to apply </Label>
-                            <DatePicker
-                              onChange={(e) => {this.setState(
-                                {
-                                  // Input : {...this.state.Input , }
-                                  last_date_to_apply : e
-                                } , ()=> {console.log(this.state.Input.last_date_to_apply)})
-                                }}
-                              value={this.state.last_date_to_apply}
-                            />
+                            {/* <SingleDatePicker
+          numberOfMonths={1}
+          onDateChange={date => this.setState({ date })}
+          onFocusChange={({ focused }) => this.setState({ focused })}
+          focused={this.state.focused}
+          date={this.state.date}
+        /> */}
                             <FormText className="help-block">Please enter your last_date_to_apply</FormText>
                             <FormFeedback>{errors.last_date_to_apply}</FormFeedback>
                           </FormGroup>
@@ -1205,7 +1251,24 @@ export default class EditStorerooms extends Component {
                         </Row>
                         </CardBody>
                       </Card>
-                        {/* <Col md={4}>
+                      <Card>
+                        <CardBody>  
+                          <div style={{display:'flex'}}>                    
+                            <input onChange={this.addImageToPost} type='file' name='files[]' multiple='multiple' />
+                            {this.state.imageToPost && 
+                            this.state.imageToPost.map((image , index) => (
+                            <div
+                              style={{width:'100px' , height:'70px' , cursor:'pointer', display:'flex-col' }} key={index}>  
+                            <div>
+                            <img src={image} alt='image' width='50px' height='40px' onClick={ () => this.popup(index)}></img>
+                            <p style={{color:'red'}} onClick={() => this.removeImage(index)} >Remove</p> </div>
+                        </div>)
+                       )}
+                        </div> 
+                        </CardBody>
+                      </Card>
+
+                      {/* <Col md={4}>
                           <FormGroup>
                             <Label for="tenderDocuments">tenderDocuments *</Label>
                             <Input
@@ -1228,7 +1291,6 @@ export default class EditStorerooms extends Component {
                             <FormFeedback  >{errors.tenderDocuments}</FormFeedback>
                           </FormGroup>
                         </Col> */}
-                       
  {/* //=========================================================================================================================================*/}
 
                       <Row>
@@ -1280,6 +1342,7 @@ export default class EditStorerooms extends Component {
             </Card>
           </Col>
         </Row>
+        {/* <Popup> </Popup> */}
       </div>
     );
   }

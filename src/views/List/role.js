@@ -61,7 +61,7 @@ export class role extends Component {
         axios.get(process.env.REACT_APP_BACKEND_API_URL+'/get/company/roles/'+ companyId , config)
         .then(res => {
           
-          this.setState({
+          this.setState({ 
             Data : res.data.data.data
           })
           console.log(this.state.Data);
