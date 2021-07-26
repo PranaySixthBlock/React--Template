@@ -51,7 +51,7 @@ state = {
         }
       axios.get(process.env.REACT_APP_BACKEND_API_URL+'//get/user/permissions/'+ userId , config)
       .then(response =>{    
-        // console.log(response.data.data) 
+        console.log(response.data.data) 
       this.setState({
         permissions : response.data.data.permissions,
         dashboard : response.data.data.dashboard,

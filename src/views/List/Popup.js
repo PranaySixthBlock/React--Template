@@ -31,7 +31,7 @@ export class Popup extends Component {
                 <div style ={this.state.MODAL_STYLES}>
                     <img src={this.props.src} alt="image" width='300px' height='300px' object-fit='contain'></img>
                     <div>
-                    <button onClick={this.props.onClose} type="button">close</button>   
+                    <button onClick={this.props.onClose} style={{backgroundColor:'tomato' , borderRadius:'5px' }} type="button">Close</button>   
                     </div>
                 </div>
             </div>

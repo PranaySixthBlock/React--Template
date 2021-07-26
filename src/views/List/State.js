@@ -31,6 +31,7 @@ import {
   import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
   import { toast, ToastContainer } from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
+  import swal from 'sweetalert';
 
 export default class Country extends Component {
 
@@ -93,6 +94,10 @@ export default class Country extends Component {
                 options1 : copy,
             })
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
 
         axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/bytype/'+ this.state.type + '/' + companyId)
         .then (response => {
@@ -113,6 +118,10 @@ export default class Country extends Component {
             })
             // console.log(this.state.options)
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
     }
 
     onSubmit = () => {
@@ -143,6 +152,10 @@ export default class Country extends Component {
         toast.error("Unsuccessfully")
       }
       })
+      .catch(function (error) {
+        console.log(error.message)
+        swal({error}, {icon : "error" } )
+        }.bind(this));
     }
     render() {
         return (

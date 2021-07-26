@@ -20,6 +20,7 @@ import {
   import axios from 'axios'
   import { toast, ToastContainer } from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
+  import swal from 'sweetalert';
 
   const validationSchema = function (values) {
     return Yup.object().shape({
@@ -67,6 +68,10 @@ export default class CreateCountry extends Component {
             this.setState({name:response.data.data[0].name})
             this.setState({status:response.data.data[0].status})
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
     }}
 
     onSubmit = () => {
@@ -89,6 +94,10 @@ export default class CreateCountry extends Component {
                 }
                 else {console.log(response.message)}
             })
+            .catch(function (error) {
+              console.log(error.message)
+              swal({error}, {icon : "error" } )
+              }.bind(this));
         }
         else{
             let companyId = localStorage.getItem("companyId");
@@ -110,7 +119,10 @@ export default class CreateCountry extends Component {
             else {console.log(response.message)}
             // this.props.history.push(`/${this.state.type}`);
         })
-        .catch(err => console.error(err))
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
         }        
     }
     render() {

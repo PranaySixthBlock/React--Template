@@ -35,7 +35,7 @@ import {
   import _ from "lodash";
   import axios from 'axios'
   import { Formik } from "formik";
-
+  import swal from 'sweetalert';
 
 export class role extends Component {
 
@@ -66,6 +66,10 @@ export class role extends Component {
           })
           console.log(this.state.Data);
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
       }
 
       openRoles=()=>{

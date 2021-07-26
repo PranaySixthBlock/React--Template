@@ -19,6 +19,7 @@ import {
   import axios from 'axios'
   import { toast, ToastContainer } from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
+  import swal from 'sweetalert';
 
 
 export default class CreateCountry extends Component {
@@ -53,6 +54,11 @@ export default class CreateCountry extends Component {
             })
             console.log(this.state.options)
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
+
         let id = this.props.match.params.id;
         if(id != 'new'){
         axios.get(process.env.REACT_APP_BACKEND_API_URL + '/get/company/state/dropdown/' + id)
@@ -62,6 +68,10 @@ export default class CreateCountry extends Component {
             this.setState({status : response.data.data[0].status})
             this.setState({Country : response.data.data[0].countryId})
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
     }
     }
 
@@ -86,6 +96,10 @@ export default class CreateCountry extends Component {
                 }
                 else {console.log(response.message)}
             })
+            .catch(function (error) {
+              console.log(error.message)
+              swal({error}, {icon : "error" } )
+              }.bind(this));
         }
         else{
             let companyId = localStorage.getItem("companyId");
@@ -106,9 +120,10 @@ export default class CreateCountry extends Component {
             }
             else {console.log(response.message)}
         })
-        .catch (err => {
-            console.log(err);
-        })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
         }        
     }
     render() {

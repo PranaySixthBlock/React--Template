@@ -23,6 +23,8 @@ import {
   import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
   import DatatableOptions from "../../containers/DefaultDatatableOptions/DefaultDatatableOptions";
   import axios from '../../containers/Axios/Config';
+  import swal from 'sweetalert';
+
 
 export default class Country extends Component {
 
@@ -63,6 +65,10 @@ export default class Country extends Component {
       AssetsData : response.data.data.data
     })
   })
+  .catch(function (error) {
+    console.log(error.message)
+    swal({error}, {icon : "error" } )
+    }.bind(this));
     }
 
     render() {
@@ -91,8 +97,8 @@ export default class Country extends Component {
                     version="4"
                     striped
                     hover
-                    // exportCSV={true}
-                    csvFileName={"Assets List.csv"}
+                    exportCSV={true}
+                    csvFileName={"Tender List.csv"}
                     // search
                     options={DatatableOptions}
                   >
@@ -109,15 +115,25 @@ export default class Country extends Component {
                     </TableHeaderColumn>
                     
                     <TableHeaderColumn
+                      csvHeader = 'Name'
                       dataField='tender_name'
                       dataAlign="center"
                       dataSort
-                      export={false}
                       width="120"
                     >
                       Name
-                    </TableHeaderColumn>                    
+                    </TableHeaderColumn>     
                     <TableHeaderColumn
+                      csvHeader = 'Amount'
+                      dataField='emd_amount'
+                      dataAlign="center"
+                      dataSort
+                      width="120"
+                    >
+                      Tender Amount
+                    </TableHeaderColumn>                  
+                    <TableHeaderColumn
+                      csvHeader = 'Status'
                       isKey
                       dataAlign="center"
                       dataField="tender_status"
@@ -134,7 +150,7 @@ export default class Country extends Component {
                       dataAlign="center"
                       dataFormat={this.addCheckBox.bind(this)}
                       // formatExtraData='_id'                    
-                      export={true}
+                      export={false}
                       width="80"
                     >
                     Actions

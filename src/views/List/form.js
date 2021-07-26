@@ -24,6 +24,7 @@ import _ from "lodash";
 import moment from "moment";
 import * as Yup from "yup";
 import axios from 'axios'
+import swal from 'sweetalert';
 
 // const validationSchema = Yup.object({
 //   Name : Yup.string().required('Required'),
@@ -114,7 +115,7 @@ export default class EditStorerooms extends Component {
     if(this.props.match.params.id != 'new'){
       axios.get(process.env.REACT_APP_BACKEND_API_URL + '/display/company/member/' + this.props.match.params.id , config)
     .then(response => {
-      // console.log(response.data.data.data)
+      console.log(response.data.data.data)
       let dummy = this.state.Input;
       dummy.fullName = response.data.data.data.fullName
       dummy.phone = response.data.data.data.phone
@@ -167,9 +168,10 @@ export default class EditStorerooms extends Component {
             }
             
           })
-          .catch(error => {
-            console.log(error)
-          }  )
+          .catch(function (error) {
+            console.log(error.message)
+            swal({error}, {icon : "error" } )
+            }.bind(this));
         }
         else{
           let userId = localStorage.getItem('userId');
@@ -188,6 +190,10 @@ export default class EditStorerooms extends Component {
               console.log(response.message)
             }
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
         }
     
     
@@ -306,14 +312,18 @@ export default class EditStorerooms extends Component {
                           <FormGroup>
                             <Label for="phone">Phone Number *</Label>
                             <Input
-                              type="text"
+                              type="number"
                               name="phone"
                               id="phone"
                               valid={!errors.phone}
                               invalid={touched.phone && !!errors.phone}
                               required                             
                               onChange = {handleChange}
-                              onBlur={handleBlur}
+                              onBlur={(e) => {this.setState(
+                                {
+                                 Input : {...this.state.Input , phone : e.target.value}
+                               })                         
+                               }}
                               value={values.phone}
                             />
                             <FormText className="help-block">Please enter your phone number</FormText>

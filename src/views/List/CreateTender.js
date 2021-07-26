@@ -17,6 +17,9 @@ import {
   import { Formik } from "formik";
   import { AppSwitch } from '@coreui/react'
   import axios from 'axios'
+  import readXlsxFile from 'read-excel-file'
+  import * as XLSX from 'xlsx';
+
 
 export default class CreateCountry extends Component {
 
@@ -34,70 +37,48 @@ export default class CreateCountry extends Component {
                 value: 'Country',
                 label : 'Country'
               }],
-            name : "",
-            status : true ,
+            name : '',
             Country : ''
     }
 
-    componentDidMount () {
-        // let companyId = localStorage.getItem("companyId");
-        // console.log(companyId);
-        // axios.get(process.env.REACT_APP_BACKEND_API_URL + '/all/user/dropdowns/' + companyId)
-        // .then (response => {
-        //     // console.log(response.data.data)
-        //     let copy = []
-        //     response.data.data.forEach((e,index) => {
-        //         copy.push({
-        //             label : e.name,
-        //             value : e._id
-        //         })
-        //     })
-        //     this.setState({
-        //         options : copy,
-        //     })
-        //     console.log(this.state.options)
-        // })
-        let id = this.props.match.params.id;
-        if(id != 'new'){
-        axios.get(process.env.REACT_APP_BACKEND_API_URL + '/get/company/state/dropdown/' + id)
-        .then(response => {
-            console.log(response.data.data)
-            this.setState({name:response.data.data[0].name})
-            this.setState({status : response.data.data[0].status})
-            this.setState({Country : response.data.data[0].countryId})
-        })
-    }
-    }
+table = (e) => {
+  console.log(e)
+}
 
-    onSubmit = () => {
-        let id = this.props.match.params.id;
-        if(id != 'new'){
-            axios.put(process.env.REACT_APP_BACKEND_API_URL + '/update/company/state/dropdown/' + id , {
-                name : this.state.name,
-                status:this.state.status? "1" : "0",
-                countryId : this.state.Country
-            })
-            .then (response => {
-                console.log(response)
-                this.props.history.push("/state");
-            })
-        }
-        else{
-            let companyId = localStorage.getItem("companyId");
-        axios.post(process.env.REACT_APP_BACKEND_API_URL + '/create/new/state/dropdown/' + companyId , {
-            name : this.state.name,
-            countryId : this.state.Country
-        })
-        .then (response => {
-            console.log(response);
-            this.props.history.push("/state");
-        })
-        .catch (err => {
-            console.log(err);
-        })
-        }        
-    }
+   handleUpload = (e) => {
+
+      var files = e.target.files, f = files[0];
+      var reader = new FileReader();
+       reader.readAsBinaryString(f)
+       var dataParse = []
+       const handleName  = async(name) => {
+         console.log(name[0])
+
+         await this.setState({
+           name : name
+         } )
+       }
+       reader.onload =  function (e) {
+          var data = e.target.result;
+          let readedData = XLSX.read(data, {type: 'binary'});
+          const wsname = readedData.SheetNames[0];
+          const ws = readedData.Sheets[wsname];
+  
+          /* Convert array to json*/
+          // var dataParse = []
+          dataParse = XLSX.utils.sheet_to_json(ws, {header:1});
+          console.log(dataParse)
+          // this.setState({
+          //   name : dataParse
+          // } , () => console.log(this.state.name))
+          handleName(dataParse)
+      };
+     
+      
+  }
+
     render() {
+      console.log(this.state.name)
         return (
             <div>
                 <Row>
@@ -138,11 +119,11 @@ export default class CreateCountry extends Component {
                           <FormGroup>
                             <Label for="Country">Type *</Label>
                             <Input
-                              type='select'
+                              type='file'
                               name="Country"
                               id="Country"
                               multi
-                              value={this.state.Country}
+                              // value={this.state.Country}
                               // defaultValue={values.Country}
                               valid={!errors.Country}
                               inputProps={{
@@ -152,17 +133,10 @@ export default class CreateCountry extends Component {
                               }}
                               invalid={touched.Country && !!errors.Country}
                               options={this.state.locationData }
-                              onChange={(e) => {this.setState(
-                                {
-                                   Country : e.target.value
-                                })                            
-                                
-                              }}
+                              onChange={ (e) => this.handleUpload(e)
+                              }
                               onBlur={handleBlur}
                             >
-                              {this.state.options.map((option) => (
-                              <option value={option.value} key ={option.value}>{option.label}</option>
-                                ))}
                             </Input>
                             
                             <FormText className="help-block">Please select the Type</FormText>
@@ -177,48 +151,6 @@ export default class CreateCountry extends Component {
                             </div>
                           </FormGroup>
                         </Col> 
-                        <Col md={4}>
-                          <FormGroup>
-                            <Label for="name">Tender *</Label>
-                            <Input
-                              type="text"
-                              name="name"
-                              id="name"
-                              valid={!errors.name}
-                              invalid={touched.name && !!errors.name}
-                              required
-                              // onChange={(e) => this.setState({name:e.target.value})}
-                              onChange = {handleChange}
-                              onBlur={handleBlur}
-                              value={values.name}
-                            />
-                            <FormText className="help-block">Please enter the Tender name</FormText>
-                            <FormFeedback>{errors.name}</FormFeedback>
-                          </FormGroup>
-                        </Col>
-                        {/* {console.log(values.role)} */}                        
-                        <Col >
-                        <FormGroup className="text-center">
-                            <Label for="status" class="switch switch-3d switch-primary" >Status *</Label>
-                            <div style={{marginTop:'1px' , marginLeft:'10px'}}></div>
-                            <AppSwitch
-                                name="status"
-                                id="status"
-                                className={"mx-1"}
-                                variant={"3d"}
-                                color={"primary"}
-                                // disabled={ownerStatus}
-                                label
-                                dataOn={"\u2713"}
-                                dataOff={"\u2715"}
-                                onChange={(e) => this.setState({status: e.target.checked})}
-                                checked={this.state.status}
-                            />
-                            <FormText className="help-block">Please select the status</FormText>
-                            <FormFeedback>{errors.status}</FormFeedback>
-                          </FormGroup>          
-                        </Col>
-                       
                        </Row>
                       <Row>
                         <Col>
@@ -269,7 +201,48 @@ export default class CreateCountry extends Component {
               </CardBody>
             </Card>
           </Col>
-        </Row>        
+        </Row>  
+        <Row>
+                        <Col>
+                          <Card>
+                            <CardBody>
+                       
+                        {this.state.name == [] ? 
+                          <table className=' table bordered table' style={{textAlign:'center' , padding:'10px'}} >
+                            
+                          </table>
+                      : <table>
+                      
+                      {this.state.name.map((e , index)=>{
+                        console.log(e , index)  
+                        if(index === 0){
+                          return (
+                          <tr>
+                          {e.map((th) => (
+                            <th style={{margin:'25px', padding:'10px'}}>{th}</th>
+                          ))}
+                          </tr>
+                      )
+                      }else{
+                        return (
+                          <tr>
+                          {e.map((td) => (
+                            <td style={{margin:'25px',  padding:'10px'}}>{td}</td>
+                          ))}
+                          </tr>
+                      )
+                        }
+
+                      }                        
+                      )}
+                      
+                    </table>
+                    }
+                       
+                        </CardBody>
+                        </Card>
+                        </Col>
+                        </Row>      
             </div>
         )
     }

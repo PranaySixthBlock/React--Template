@@ -23,6 +23,7 @@ import {
   import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
   import DatatableOptions from "../../containers/DefaultDatatableOptions/DefaultDatatableOptions";
   import axios from 'axios'
+  import swal from 'sweetalert';
 
 export default class Country extends Component {
 
@@ -66,6 +67,10 @@ export default class Country extends Component {
                 AssetsData : response.data.data
             })
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
     }
 
     render() {

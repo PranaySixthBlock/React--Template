@@ -29,6 +29,7 @@ import axios from '../../containers/Axios/Config';
 import { AppSwitch } from '@coreui/react'
 import DatePicker from 'react-date-picker';
 import Popup from './Popup';
+import swal from 'sweetalert';
 
 // const validationSchema = Yup.object({
 //   Name : Yup.string().required('Required'),
@@ -65,7 +66,7 @@ export default class EditStorerooms extends Component {
       city : '' ,
       department_contact_person1 : '' ,
       department_contact_person2 : '' ,
-      // tenderDocuments : '' ,
+      // tender_documents : [] ,
       tender_owner : '' ,
       emd_amount : '' ,
       emd_paid_by_company : '' ,
@@ -105,30 +106,61 @@ export default class EditStorerooms extends Component {
     imageToPost : [],
     isOpen : false,
     img : 0 ,
+    files : [],
+    initialCount : 0,
+    fileObj : {},
   };
 
-   addImageToPost = (e) => {
-     if(this.state.imageToPost.length >= 5){
+   addImageToPost = async(e) => {
+     if(this.props.match.params.id != 'new'){
+      if(e.target.files.length + this.state.imageToPost.length > 5){
         toast.error("Cannot add more than 5 images")
-     }else{
-    const reader = new FileReader();
-    
-    if (e.target.files[0]) {
-        reader.readAsDataURL(e.target.files[0]);
-    }
+        return false
+     }
+     }
+     if(this.props.match.params.id == 'new' && e.target.files.length > 5){
+        toast.error("Cannot add more than 5 images")
+        this.setState({imageToPost : []})
+     }
+     else{
+      //  console.log(e.target.files)
+       let array = [];
+       for( let x = 0; x < e.target.files.length; x++){
+         array.push(e.target.files[x])
+       }
+      if(this.props.match.params.id != 'new'){
+      await this.setState({
+        fileObj : e.target.files,
+        files : array,
+      },() => console.log(this.state.fileObj , this.state.files))}
+      else{
+        await this.setState({
+          fileObj : e.target.files,
+          imageToPost : [],
+          files : array,
+        },() => console.log(this.state.fileObj , this.state.files))
+      }
+      
+      for (let i = 0; i < this.state.fileObj.length; i++) {
+        let fileExtenstion = this.state.fileObj[i].name.split(".").pop();
+        var file = this.state.fileObj[i];
+        // console.log('for loop')
+        // if (!file.type.match('image')) continue;
 
-    reader.onload = (readerEvent) => {
-      let copy = this.state.imageToPost
-      if(copy.includes( readerEvent.target.result)){
-        toast.error('Image has been added earlier')
-        console.log(this.state.imageToPost.length)
-      }else{
-      copy.push ( readerEvent.target.result)
-        this.setState({
-          imageToPost : copy
-        })
-    }}
+    const reader = new FileReader();
+    reader.readAsDataURL(file)
+        let fileArray = this.state.imageToPost
+    fileArray.push({
+      src : URL.createObjectURL(this.state.fileObj[i]),
+      name: this.state.fileObj[i].name,
+      type : fileExtenstion
+    });
+
+    this.setState({
+      imageToPost : fileArray,
+    } , () => console.log(this.state.imageToPost))   
   }
+}
 }
 
   popup = (index) => {    
@@ -138,20 +170,78 @@ export default class EditStorerooms extends Component {
       }, () => console.log(this.state.img) )    
   }
 
-  removeImage = (index) => {
+  removeImage = (index , id , name) => {
+    if(id){
+      console.log(id , name)
+      swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this image !",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          axios.delete( '/delete/tender/image/' + this.props.match.params.id + '/' + id)
+          let copy = this.state.imageToPost
+          copy.splice(index, 1)
+          console.log(id)
+          this.setState({
+            imageToPost : copy
+          } )
+          swal("Poof! Your image has been deleted!", {
+            icon: "success",
+          });
+        } else {
+          swal("Your image file is safe!");
+        }
+      });
+     
+    } else{
     let copy = this.state.imageToPost
     copy.splice(index, 1)
-    console.log(copy.length)
+    let copy1 = this.state.files
+    for(let i = 0; i < copy1.length; i++){
+      if(copy1[i].name == name){
+        copy1.splice(i , 1)
+      }
+    }
+    // console.log(id)
     this.setState({
-      imageToPost : copy
-    } )
-  }
+      imageToPost : copy,
+      files : copy1,
+    } , () => console.log(this.state.files))
+  }}
 
   componentDidMount () {
    if(this.props.match.params.id != 'new'){
+    axios.get( '/display/tender/images/' + this.props.match.params.id )
+    .then(response => {
+      console.log(response.data.data)
+      let copy=[]
+      response.data.data.forEach((e , index)=> {
+        let name = e.filename.split('_').pop();
+        copy.push({
+          src : process.env.REACT_APP_BACKEND_IMAGES_URL +  "tenders/" + e.filename,
+          id : e._id,
+          type : e.mimetype,
+          name : name
+         })
+      })
+      // console.log(copy)
+      this.setState({
+        imageToPost : copy,
+        initialCount : copy.length
+      },() => console.log(this.state.initialCount))
+    })
+    .catch(function (error) {
+      console.log(error.message)
+      swal({error}, {icon : "error" } )
+      }.bind(this));
+
     axios.get( '/get/company/tender/' + this.props.match.params.id )
     .then(response =>{
-      console.log(response.data.data.data[0])
+      // console.log(response.data.data.data[0])
       this.setState({
         Input: response.data.data.data[0] , 
         tender_category : {
@@ -204,7 +294,7 @@ export default class EditStorerooms extends Component {
     let companyId = localStorage.getItem('companyId');
     axios.get(process.env.REACT_APP_BACKEND_API_URL+ '/get/company/tender/dropdown/values/' + companyId , config )
     .then(response => {
-      console.log(response.data.data)
+      // console.log(response.data.data)
       let copy1 = [{
         label : 'Select' ,
         value : ''
@@ -313,11 +403,14 @@ export default class EditStorerooms extends Component {
               this.setState({
                 roleOptions : copy8,
               })
-     })    
+     })
+     .catch(function (error) {
+      console.log(error.message)
+      swal({error}, {icon : "error" } )
+      }.bind(this));    
   }
 
   onSubmit = () => {
-    // console.log(this.state.Input)
     let id = this.props.match.params.id;
     let token=localStorage.getItem("Rjstoken")
     let config = {
@@ -328,44 +421,74 @@ export default class EditStorerooms extends Component {
         if(id != 'new'){
             axios.put(process.env.REACT_APP_BACKEND_API_URL + '/update/company/tender/' + id , this.state.Input , config)
             .then (response => {
-                // console.log(response)
+                console.log(response)
+                
                 if(response.status === 200) {
                   toast.success( "Tender has been updated successfully")
                   setTimeout(
                     function(){
                       this.props.history.push(`/tenderDisplay`);
                     }.bind(this),
-                   3000);            
+                   3000); 
+                   
+                   const formData = new FormData();
+                    let companyId = localStorage.getItem("companyId");
+                    for(let i = 0 ; i< this.state.files.length ; i++) {
+                    formData.append('images',this.state.files[i])
+                    }   
+                    axios.post(process.env.REACT_APP_BACKEND_API_URL + '/upload/tender/images/' + companyId + '/' + this.props.match.params.id , formData )
+                    .then(response=>{
+                    console.log(response)
+                    }) 
                 }
                 else {console.log(response.message)}
             })
+            .catch(function (error) {
+              console.log(error.message)
+              swal({error}, {icon : "error" } )
+              }.bind(this));
         }
         else{
             let companyId = localStorage.getItem("companyId");
         axios.post(process.env.REACT_APP_BACKEND_API_URL + '/create/new/tender/' + companyId , this.state.Input , config)
         .then (response => {
-            console.log(response);
+            console.log(response.data.data.data);
             if(response.status === 200) {
+              let tenderId = response.data.data.data[0]._id
               toast.success("Tender has been created successfully")
               setTimeout(
                 function(){
                   this.props.history.push(`/tenderDisplay`);
                 }.bind(this),
-               3000);            
+               3000); 
+               
+               const formData = new FormData();
+               let companyId = localStorage.getItem("companyId");
+               for(let i = 0 ; i< this.state.files.length ; i++) {
+               formData.append('images',this.state.files[i])
+               }   
+               axios.post(process.env.REACT_APP_BACKEND_API_URL + '/upload/tender/images/' + companyId + '/' + tenderId , formData )
+               .then(response=>{
+               console.log(response)
+               })   
+
             }
             else {console.log(response.message)}
             // this.props.history.push(`/${this.state.type}`);
         })
-        .catch(err => console.error(err))
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
         }        
   }
   
   render() {
     return (
       <div className="animated fadeIn">
-       <Popup open={this.state.isOpen} src ={this.state.imageToPost[this.state.img]} 
+      {this.state.imageToPost[0] && ( <Popup open={this.state.isOpen} src ={this.state.imageToPost[this.state.img].src} 
         onClose={() => this.setState({isOpen: false})}>
-      </Popup>
+      </Popup> )}
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -865,6 +988,8 @@ export default class EditStorerooms extends Component {
           focused={this.state.focused}
           date={this.state.date}
         /> */}
+                              <div> </div>
+                              <input type="date" id="date_of_refund" name="date_of_refund" />
                             <FormText className="help-block">Please enter your date of refund</FormText>
                             <FormFeedback>{errors.date_of_refund}</FormFeedback>
                           </FormGroup>
@@ -879,6 +1004,8 @@ export default class EditStorerooms extends Component {
           focused={this.state.focused}
           date={this.state.date}
         /> */}
+                            <div> </div>
+                              <input type="date" id="last_date_to_apply" name="last_date_to_apply" />
                             <FormText className="help-block">Please enter your last_date_to_apply</FormText>
                             <FormFeedback>{errors.last_date_to_apply}</FormFeedback>
                           </FormGroup>
@@ -1254,43 +1381,24 @@ export default class EditStorerooms extends Component {
                       <Card>
                         <CardBody>  
                           <div style={{display:'flex'}}>                    
-                            <input onChange={this.addImageToPost} type='file' name='files[]' multiple='multiple' />
+                            <input onChange={(e) => this.addImageToPost(e)} type='file' name='files[]' multiple='multiple' />
                             {this.state.imageToPost && 
                             this.state.imageToPost.map((image , index) => (
                             <div
-                              style={{width:'100px' , height:'70px' , cursor:'pointer', display:'flex-col' }} key={index}>  
+                              style={{width:'150px' , height:'70px' , cursor:'pointer', display:'flex-col' }} key={index}>  
                             <div>
-                            <img src={image} alt='image' width='50px' height='40px' onClick={ () => this.popup(index)}></img>
-                            <p style={{color:'red'}} onClick={() => this.removeImage(index)} >Remove</p> </div>
+                            {image.type == 'png' || image.type === 'image' || image.type == 'jpg' || image.type == 'image/png'  || image.type == 'image/jpeg' || image.type == 'image/jpg' ? 
+                            <img  src={image.src} alt='image' width='50px' height='40px' onClick={ () => this.popup(index)}></img> : 
+                            <a href={image.src} target='_blank' style={{}}> {image.name} </a> 
+                          }
+                            <p style={{color:'red'}} onClick={() => this.removeImage(index , image.id , image.name )} >Remove</p> </div>
                         </div>)
                        )}
                         </div> 
+                        <div id='result'></div>
                         </CardBody>
                       </Card>
 
-                      {/* <Col md={4}>
-                          <FormGroup>
-                            <Label for="tenderDocuments">tenderDocuments *</Label>
-                            <Input
-                              style={{marginTop:'5px'}}
-                              type="file"
-                              name="tenderDocuments"
-                              id="tenderDocuments"
-                              valid={!errors.tenderDocuments}
-                              invalid={touched.tenderDocuments && !!errors.tenderDocuments}
-                              required                              
-                              onChange = {handleChange}
-                              onBlur={(e) => {this.setState(
-                                   {
-                                     Input : {...this.state.Input , tenderDocuments : e.target.value}
-                                   })                         
-                                   }}
-                              value={values.tenderDocuments}
-                            />
-                            <FormText className="help-block" style={{marginTop:'8px'}} >Please enter your tenderDocuments</FormText>
-                            <FormFeedback  >{errors.tenderDocuments}</FormFeedback>
-                          </FormGroup>
-                        </Col> */}
  {/* //=========================================================================================================================================*/}
 
                       <Row>

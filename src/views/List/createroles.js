@@ -17,6 +17,7 @@ import axios from 'axios';
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import { toast, ToastContainer } from "react-toastify";
 // import './roles.css'
+import swal from 'sweetalert';
 
 export default class roles extends Component {
 
@@ -127,6 +128,10 @@ export default class roles extends Component {
           console.log(response);
         }
       })
+      .catch(function (error) {
+        console.log(error.message)
+        swal({error}, {icon : "error" } )
+        }.bind(this));
     }
 
     addCheckBox(cell, row, enumObject) {
@@ -210,6 +215,10 @@ export default class roles extends Component {
           }
           else {console.log(response.message)}
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
       }
       else {
         let token=localStorage.getItem("Rjstoken")
@@ -233,6 +242,10 @@ export default class roles extends Component {
           }
           else {console.log(response.message)}
         })
+        .catch(function (error) {
+          console.log(error.message)
+          swal({error}, {icon : "error" } )
+          }.bind(this));
       }
     }
 
